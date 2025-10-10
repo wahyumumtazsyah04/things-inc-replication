@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/reduced-motion";
 
 /**
  * IrisMask
@@ -8,7 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
  * Uses clip-path for broad support and respects reduced motion.
  */
 export default function IrisMask({ show }: { show: boolean }) {
-  const reduce = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduce = usePrefersReducedMotion();
   if (reduce) return null;
   return (
     <AnimatePresence>

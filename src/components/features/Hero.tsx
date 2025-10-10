@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import Magnetic from "@/components/ui/Magnetic";
+import MountOnVisible from "@/components/ui/MountOnVisible";
 
 const PortalScene3D = dynamic(() => import("@/components/decor/PortalScene3D"), { ssr: false });
 
@@ -65,8 +66,10 @@ export default function Hero() {
 
     return (
         <section className="section relative mx-auto max-w-6xl px-4 pt-16 sm:pt-20 md:pt-24 pb-14 sm:pb-16 md:pb-20">
-            {/* Lightweight 3D canvas (gated by prefers-reduced-motion) */}
-            <PortalScene3D />
+            {/* Lightweight 3D canvas (gated by prefers-reduced-motion) and only mounted when visible */}
+            <MountOnVisible rootMargin="0px 0px -10% 0px">
+                <PortalScene3D />
+            </MountOnVisible>
             {/* Background mosaic (subtle) */}
             <div className="pointer-events-none absolute inset-0 -z-10 opacity-[0.06]">
                 <div className="absolute -left-20 top-10 hidden h-64 w-64 rotate-6 sm:block" style={{ backgroundImage: 'url(/thingsinc/67297fcb3d8968f4ca826780_hex_room_1.webp)', backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }} />

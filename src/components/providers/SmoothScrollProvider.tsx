@@ -3,17 +3,25 @@ import React from "react";
 import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { usePrefersReducedMotion } from "@/lib/reduced-motion";
 
 export default function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
+    const reduce = usePrefersReducedMotion();
+
     React.useEffect(() => {
-        const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         // Register ScrollTrigger once on client
         if (typeof window !== "undefined") {
             gsap.registerPlugin(ScrollTrigger);
         }
+        if (reduce) {
+            // When reduced motion is on, don't initialize Lenis; ensure ScrollTrigger is refreshed
+            try { ScrollTrigger.refresh(); } catch { }
+            return;
+        }
+
         const lenis = new Lenis({
-            duration: reduce ? 1 : 1.1,
-            smoothWheel: !reduce,
+            duration: 1.1,
+            smoothWheel: true,
         });
 
         // Bridge Lenis with ScrollTrigger so scroll-driven animations stay in sync
@@ -36,7 +44,8 @@ export default function SmoothScrollProvider({ children }: { children: React.Rea
             cleaner.destroy?.();
             try { ScrollTrigger.killAll(false); } catch { }
         };
-    }, []);
+        // include reduce so when user toggles OS setting, we re-evaluate
+    }, [reduce]);
 
     return <>{children}</>;
 }

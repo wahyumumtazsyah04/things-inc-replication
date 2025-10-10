@@ -2,6 +2,7 @@
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { usePathname } from "next/navigation";
+import { usePrefersReducedMotion } from "@/lib/reduced-motion";
 
 type Props = {
     children: React.ReactNode;
@@ -9,7 +10,7 @@ type Props = {
 
 export default function PageTransitionProvider({ children }: Props) {
     const pathname = usePathname();
-    const reduce = typeof window !== "undefined" && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduce = usePrefersReducedMotion();
 
     // Only show the sweep overlay on actual route changes, not on the first paint
     const firstRef = React.useRef(true);

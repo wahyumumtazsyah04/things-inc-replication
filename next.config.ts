@@ -5,6 +5,13 @@ const nextConfig: NextConfig = {
     // Silence workspace root inference warning by pinning this project as root
     root: __dirname,
   },
+  images: {
+    formats: ["image/avif", "image/webp"],
+    // Add remotePatterns here if we ever serve images from a CDN/domain
+    // remotePatterns: [
+    //   { protocol: "https", hostname: "cdn.example.com" },
+    // ],
+  },
   async redirects() {
     return [
       { source: "/privacy-policy", destination: "/privacy", permanent: true },

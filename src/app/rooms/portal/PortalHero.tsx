@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useParallax } from "@/lib/animations";
 import React from "react";
 import IrisMask from "@/components/decor/IrisMask";
+import MountOnVisible from "@/components/ui/MountOnVisible";
 
 const PortalScene3D = dynamic(() => import("@/components/decor/PortalScene3D"), { ssr: false });
 
@@ -20,7 +21,9 @@ export default function PortalHero() {
         title="Portal"
         subtitle="Step into the next space—playful transitions between scenes."
       />
-      <PortalScene3D />
+      <MountOnVisible rootMargin="0px 0px -10% 0px">
+        <PortalScene3D />
+      </MountOnVisible>
       <div ref={maskRef} className="tunnel-mask-soft" aria-hidden="true" />
       <IrisMask show={iris} />
     </div>

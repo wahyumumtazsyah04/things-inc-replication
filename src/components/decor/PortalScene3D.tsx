@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import type { RootState } from "@react-three/fiber";
 import * as THREE from "three";
+import { useAmbience } from "@/components/providers/AmbienceProvider";
 
 function DisplacedPlane({ amp = 0.15, colorA = new THREE.Color(0.35, 0.36, 0.6), colorB = new THREE.Color(0.2, 0.2, 0.35), alpha = 0.65 }) {
   const meshRef = useRef<THREE.Mesh>(null);
@@ -82,6 +83,7 @@ function ParallaxRig() {
 
 export default function PortalScene3D() {
   const [enabled, setEnabled] = useState(false);
+  const { theme } = useAmbience();
   useEffect(() => {
     const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     setEnabled(!reduce);
@@ -90,8 +92,8 @@ export default function PortalScene3D() {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0">
       <Canvas dpr={[1, 1.5]} camera={{ position: [0, 0, 3.2], fov: 55 }}>
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[3, 5, 2]} intensity={0.7} />
+        <ambientLight intensity={theme === 'night' ? 0.45 : 0.6} />
+        <directionalLight position={[3, 5, 2]} intensity={theme === 'night' ? 0.55 : 0.7} color={theme === 'night' ? new THREE.Color(0.7,0.75,1) : new THREE.Color(1,0.95,0.9)} />
         <ParallaxRig />
         {/* Fake bloom/vignette: subtle screen-space quad overlay using CSS handled in parent wrapper */}
       </Canvas>

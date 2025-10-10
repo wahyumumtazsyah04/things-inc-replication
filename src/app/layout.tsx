@@ -9,6 +9,10 @@ import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider";
 import PageTransitionProvider from "@/components/providers/PageTransitionProvider";
 import CustomCursor from "@/components/ui/CustomCursor";
 import RouteChangeEffects from "@/components/providers/RouteChangeEffects";
+import AnalyticsEvents from "@/components/providers/AnalyticsEvents";
+import { CollectiblesProvider } from "@/components/providers/CollectiblesProvider";
+import { AmbienceProvider } from "@/components/providers/AmbienceProvider";
+import CollectiblesHUD from "@/components/ui/CollectiblesHUD";
 
 const fontSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -85,6 +89,11 @@ export default async function RootLayout({
               // If user has a stored preference, honor it by overriding SSR value; otherwise keep SSR theme
               if (t === 'day' || t === 'night') {
                 document.documentElement.setAttribute('data-theme', t);
+              } else {
+                // Fallback: use local time-of-day if no stored preference (day: 6-18h, night: otherwise)
+                var h = new Date().getHours();
+                var auto = (h >= 6 && h < 18) ? 'day' : 'night';
+                document.documentElement.setAttribute('data-theme', auto);
               }
             } catch (e) {}
           `}
@@ -129,19 +138,45 @@ export default async function RootLayout({
             </noscript>
           </>
         )}
-        <SmoothScrollProvider>
-          <Header />
-          <PageTransitionProvider>
-            <main id="main" className="min-h-[70vh]">
-              {children}
-            </main>
-          </PageTransitionProvider>
-          <Footer />
-        </SmoothScrollProvider>
+        {/* Basic JSON-LD for Organization */}
+        <Script id="jsonld-org" type="application/ld+json" strategy="afterInteractive">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "Things, Inc.",
+            url: siteUrl,
+            sameAs: [
+              "https://www.youtube.com/@thingsinc",
+              "https://x.com/thingsinc",
+              "https://www.threads.net/@thingsinc",
+              "https://www.tiktok.com/@thingsinc",
+              "https://discord.gg/thingsinc",
+              "https://www.instagram.com/thingsinc/"
+            ],
+            logo: `${siteUrl}/favicon.ico`
+          })}
+        </Script>
+        <AmbienceProvider initialTheme={initialTheme}>
+          <CollectiblesProvider>
+            <SmoothScrollProvider>
+              <Header />
+              <PageTransitionProvider>
+                <main id="main" className="min-h-[70vh]">
+                  {children}
+                </main>
+              </PageTransitionProvider>
+              <Footer />
+            </SmoothScrollProvider>
+            {/* Optional HUD for development; enable via NEXT_PUBLIC_SHOW_HUD=true */}
+            {process.env.NEXT_PUBLIC_SHOW_HUD === "true" && <CollectiblesHUD />}
+          </CollectiblesProvider>
+        </AmbienceProvider>
         {/* Handle scroll + ScrollTrigger refresh on navigation */}
         <RouteChangeEffects />
         {/* Custom cursor for desktop pointers (hidden on touch automatically) */}
         <CustomCursor />
+        {/* Analytics event wiring (pageviews + scroll depth) */}
+        <AnalyticsEvents />
       </body>
     </html>
   );
