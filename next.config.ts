@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  turbopack: {
+    // Silence workspace root inference warning by pinning this project as root
+    root: __dirname,
+  },
 };
 
 export default nextConfig;

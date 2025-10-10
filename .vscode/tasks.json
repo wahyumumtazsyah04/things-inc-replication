@@ -1,0 +1,18 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Install GSAP",
+			"type": "shell",
+			"command": "npm install gsap",
+			"group": "build"
+		},
+		{
+			"label": "Dev server",
+			"type": "shell",
+			"command": "npm run dev",
+			"isBackground": true,
+			"group": "build"
+		}
+	]
+}
