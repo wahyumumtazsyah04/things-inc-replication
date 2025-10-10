@@ -4,12 +4,12 @@ export const metadata = {
 };
 
 import DecorWrapper from "@/components/decor/DecorWrapper";
+import SectionHeader from "@/components/ui/SectionHeader";
 
 export default function PrivacyPage() {
   return (
     <DecorWrapper>
-      <h1 className="text-3xl font-bold tracking-tight">Privacy Policy</h1>
-      <p className="mt-3 text-[color:var(--zenotika-muted)]">This is a placeholder privacy policy page.</p>
+      <SectionHeader title="Privacy Policy" subtitle="This is a placeholder privacy policy page." />
     </DecorWrapper>
   );
 }

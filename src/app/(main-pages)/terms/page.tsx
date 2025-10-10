@@ -4,12 +4,12 @@ export const metadata = {
 };
 
 import DecorWrapper from "@/components/decor/DecorWrapper";
+import SectionHeader from "@/components/ui/SectionHeader";
 
 export default function TermsPage() {
   return (
     <DecorWrapper>
-      <h1 className="text-3xl font-bold tracking-tight">Terms of Service</h1>
-      <p className="mt-3 text-[color:var(--zenotika-muted)]">This is a placeholder terms page.</p>
+      <SectionHeader title="Terms of Service" subtitle="This is a placeholder terms page." />
     </DecorWrapper>
   );
 }

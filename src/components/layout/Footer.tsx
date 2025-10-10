@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import Reveal from "@/components/ui/Reveal";
 
 const social = {
     youtube: "https://www.youtube.com/@thingsinc",
@@ -32,7 +33,7 @@ export default function Footer() {
                 />
             </div>
             <div className="relative mx-auto max-w-6xl px-4">
-                <div className="grid grid-cols-2 gap-8 grid-gap-responsive sm:grid-cols-4">
+                <Reveal selector=":scope > *" stagger={0.08} className="grid grid-cols-2 gap-8 grid-gap-responsive sm:grid-cols-4">
                     <div>
                         <h4 className="text-[color:var(--foreground)]">Product</h4>
                         <ul className="mt-3 space-y-2">
@@ -57,7 +58,7 @@ export default function Footer() {
                     </div>
                     <div>
                         <h4 className="text-[color:var(--foreground)]">Follow</h4>
-                        <div className="mt-3 flex items-center gap-3">
+                        <Reveal selector=":scope > a" stagger={0.06} className="mt-3 flex items-center gap-3">
                             {/* social icons day */}
                             <a href={social.youtube} target="_blank" rel="noreferrer" aria-label="YouTube" className="transition-opacity hover:opacity-80">
                                 <Image src="/thingsinc/66f36059e1b812491915e08b_footer_youtube-day.svg" alt="YouTube" width={24} height={24} className="theme-day-only" />
@@ -83,9 +84,9 @@ export default function Footer() {
                                 <Image src="/thingsinc/66f360582d624b679becc8a8_footer_instagram-day.svg" alt="Instagram" width={24} height={24} className="theme-day-only" />
                                 <Image src="/thingsinc/66f3605861a90f310acdf217_footer_instagram-night.svg" alt="Instagram" width={24} height={24} className="theme-night-only" />
                             </a>
-                        </div>
+                        </Reveal>
                     </div>
-                </div>
+                </Reveal>
 
                 <div className="mt-10 flex flex-col items-start justify-between gap-4 border-t pt-6 text-xs text-[color:var(--foreground)]/60 sm:flex-row">
                     <p>© {year} Things, Inc. All rights reserved.</p>

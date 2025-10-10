@@ -8,6 +8,7 @@ import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode from "rehype-pretty-code";
 import DecorWrapper from "@/components/decor/DecorWrapper";
+import Reveal from "@/components/ui/Reveal";
 
 type Params = { params: { slug: string } };
 
@@ -71,7 +72,8 @@ export default function BlogPostPage({ params }: Params) {
   } as unknown) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
   return (
     <DecorWrapper>
-      <article className="mx-auto max-w-3xl prose prose-zinc">
+      <Reveal selector="> *" stagger={0.06} className="mx-auto max-w-3xl">
+        <article className="prose prose-zinc">
         <Script id="post-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         <h1>{post.title}</h1>
         <MDXRemote
@@ -79,7 +81,8 @@ export default function BlogPostPage({ params }: Params) {
           options={serializeOptions}
           components={MDXComponents}
         />
-      </article>
+        </article>
+      </Reveal>
     </DecorWrapper>
   );
 }

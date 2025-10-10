@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { useScrollReveal } from "@/lib/animations";
+import Reveal from "@/components/ui/Reveal";
 
 const items = [
   {
@@ -34,13 +34,12 @@ const items = [
 ];
 
 export default function RoomsGrid() {
-  const revealRef = useScrollReveal<HTMLDivElement>({ selector: "> *", stagger: 0.1 });
   return (
     <section id="rooms-grid" className="section mx-auto max-w-6xl px-4">
       <div className="mb-6">
         <h2 className="text-2xl font-semibold">Explore</h2>
       </div>
-      <div ref={revealRef} className="grid gap-6 grid-gap-responsive sm:grid-cols-2 lg:grid-cols-4">
+      <Reveal selector="> *" stagger={0.1} className="grid gap-6 grid-gap-responsive sm:grid-cols-2 lg:grid-cols-4">
         {items.map((it) => (
           <Card key={it.href} className="group overflow-hidden p-0 tilt-3d hover:tilt-sm shimmer hover:shimmer">
             <Link href={it.href} className="block">
@@ -55,7 +54,7 @@ export default function RoomsGrid() {
             </Link>
           </Card>
         ))}
-      </div>
+      </Reveal>
     </section>
   );
 }

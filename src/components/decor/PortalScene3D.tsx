@@ -4,14 +4,14 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import type { RootState } from "@react-three/fiber";
 import * as THREE from "three";
 
-function DisplacedPlane() {
+function DisplacedPlane({ amp = 0.15, colorA = new THREE.Color(0.35, 0.36, 0.6), colorB = new THREE.Color(0.2, 0.2, 0.35), alpha = 0.65 }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uAmp: { value: 0.15 },
+      uAmp: { value: amp },
     }),
-    []
+    [amp]
   );
   useFrame((_state: RootState, delta: number) => {
     uniforms.uTime.value += delta;
@@ -35,8 +35,8 @@ function DisplacedPlane() {
       // soft vignette
       float d = distance(vUv, vec2(0.5));
       float vignette = smoothstep(0.9, 0.2, d);
-      vec3 color = mix(vec3(0.35,0.36,0.6), vec3(0.2,0.2,0.35), d);
-      gl_FragColor = vec4(color * vignette, 0.65);
+      vec3 color = mix(vec3(${(colorA.r).toFixed(3)}, ${(colorA.g).toFixed(3)}, ${(colorA.b).toFixed(3)}), vec3(${(colorB.r).toFixed(3)}, ${(colorB.g).toFixed(3)}, ${(colorB.b).toFixed(3)}), d);
+      gl_FragColor = vec4(color * vignette, ${alpha.toFixed(2)});
     }
   `;
 
@@ -66,7 +66,16 @@ function ParallaxRig() {
   });
   return (
     <group ref={group}>
-      <DisplacedPlane />
+      {/* Back layer (larger, softer) */}
+      <group position={[0, -0.08, -0.15]}>
+        <DisplacedPlane amp={0.08} />
+      </group>
+      {/* Mid layer (original) */}
+      <DisplacedPlane amp={0.15} />
+      {/* Front layer (smaller, brighter) */}
+      <group position={[0, 0.06, 0.12]}>
+        <DisplacedPlane amp={0.22} />
+      </group>
     </group>
   );
 }
@@ -84,6 +93,7 @@ export default function PortalScene3D() {
         <ambientLight intensity={0.6} />
         <directionalLight position={[3, 5, 2]} intensity={0.7} />
         <ParallaxRig />
+        {/* Fake bloom/vignette: subtle screen-space quad overlay using CSS handled in parent wrapper */}
       </Canvas>
     </div>
   );

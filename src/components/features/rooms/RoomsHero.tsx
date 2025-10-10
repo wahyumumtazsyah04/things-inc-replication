@@ -3,6 +3,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useFadeInUp, useParallax, useParallaxScale } from "@/lib/animations";
+import Magnetic from "@/components/ui/Magnetic";
 
 export default function RoomsHero() {
   const h1Ref = useFadeInUp<HTMLHeadingElement>(0);
@@ -38,9 +39,11 @@ export default function RoomsHero() {
         <h1 ref={h1Ref}>Rooms</h1>
         <p ref={pRef} className="mt-3 text-[color:var(--muted)]">A playful collection of interactive spaces inspired by Things, Inc.—from displays and furniture to mirrors and portals.</p>
         <div className="mt-6">
-          <Link ref={ctaRef} href="#rooms-grid" className="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 bg-[color:var(--zenotika-accent)] text-[color:var(--zenotika-accent-contrast)] hover:bg-[color:var(--zenotika-accent-hover)] focus-visible:ring-[color:var(--zenotika-ring)] link-reset">
-            Browse rooms
-          </Link>
+              <Magnetic>
+                <Link ref={ctaRef} href="#rooms-grid" className="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 bg-[color:var(--zenotika-accent)] text-[color:var(--zenotika-accent-contrast)] hover:bg-[color:var(--zenotika-accent-hover)] focus-visible:ring-[color:var(--zenotika-ring)] link-reset">
+                  Browse rooms
+                </Link>
+              </Magnetic>
         </div>
       </div>
 

@@ -79,16 +79,16 @@ export default function Header() {
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-7 text-[15px] text-[color:var(--foreground)]/80 sm:flex [text-decoration:none]">
-          <Link href="/products" className="underline-anim hover:text-[color:var(--link-hover)]">Products</Link>
-          <Link href="/pricing" className="underline-anim hover:text-[color:var(--link-hover)]">Pricing</Link>
-          <Link href="/blog" className="underline-anim hover:text-[color:var(--link-hover)]">Blog</Link>
-          <Link href="/company/about" className="underline-anim hover:text-[color:var(--link-hover)]">About</Link>
+          <Link href="/products" className="cursor-hoverable underline-anim hover:text-[color:var(--link-hover)]">Products</Link>
+          <Link href="/pricing" className="cursor-hoverable underline-anim hover:text-[color:var(--link-hover)]">Pricing</Link>
+          <Link href="/blog" className="cursor-hoverable underline-anim hover:text-[color:var(--link-hover)]">Blog</Link>
+          <Link href="/company/about" className="cursor-hoverable underline-anim hover:text-[color:var(--link-hover)]">About</Link>
           <Magnetic>
-            <Link href="#" className="rounded border px-3.5 py-1.5 hover:bg-[color:var(--zenotika-surface)] text-[color:var(--foreground)]/90 link-reset">Login</Link>
+            <Link href="#" className="cursor-hoverable rounded border px-3.5 py-1.5 hover:bg-[color:var(--zenotika-surface)] text-[color:var(--foreground)]/90 link-reset">Login</Link>
           </Magnetic>
           {/* Optional CTA icon/button */}
           <Magnetic>
-            <Link href="/contact" className="rounded px-3.5 py-1.5 bg-[color:var(--zenotika-accent)] text-[color:var(--zenotika-accent-contrast)] hover:bg-[color:var(--zenotika-accent-hover)] link-reset">Contact</Link>
+            <Link href="/contact" className="cursor-hoverable rounded px-3.5 py-1.5 bg-[color:var(--zenotika-accent)] text-[color:var(--zenotika-accent-contrast)] hover:bg-[color:var(--zenotika-accent-hover)] link-reset">Contact</Link>
           </Magnetic>
           <ThemeToggle className="ml-2" />
         </nav>
@@ -138,11 +138,11 @@ export default function Header() {
               </div>
             </div>
             <div className="mt-8 grid gap-4 text-lg text-[color:var(--foreground)]">
-              <Link href="/products" onClick={closeAnd()} className="rounded px-2 py-2 hover:bg-[color:var(--zenotika-surface)]">Products</Link>
-              <Link href="/pricing" onClick={closeAnd()} className="rounded px-2 py-2 hover:bg-[color:var(--zenotika-surface)]">Pricing</Link>
-              <Link href="/blog" onClick={closeAnd()} className="rounded px-2 py-2 hover:bg-[color:var(--zenotika-surface)]">Blog</Link>
-              <Link href="/company/about" onClick={closeAnd()} className="rounded px-2 py-2 hover:bg-[color:var(--zenotika-surface)]">About</Link>
-              <Link href="#" onClick={closeAnd()} className="rounded px-2 py-2 hover:bg-[color:var(--zenotika-surface)]">Login</Link>
+              <Link href="/products" onClick={closeAnd()} className="cursor-hoverable rounded px-2 py-2 hover:bg-[color:var(--zenotika-surface)]">Products</Link>
+              <Link href="/pricing" onClick={closeAnd()} className="cursor-hoverable rounded px-2 py-2 hover:bg-[color:var(--zenotika-surface)]">Pricing</Link>
+              <Link href="/blog" onClick={closeAnd()} className="cursor-hoverable rounded px-2 py-2 hover:bg-[color:var(--zenotika-surface)]">Blog</Link>
+              <Link href="/company/about" onClick={closeAnd()} className="cursor-hoverable rounded px-2 py-2 hover:bg-[color:var(--zenotika-surface)]">About</Link>
+              <Link href="#" onClick={closeAnd()} className="cursor-hoverable rounded px-2 py-2 hover:bg-[color:var(--zenotika-surface)]">Login</Link>
             </div>
           </div>
         </div>

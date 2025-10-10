@@ -12,7 +12,7 @@ export default function Home() {
     <>
       <Hero />
       {/* Below sections reuse mosaic but avoid duplicating clouds/mask already in Hero */}
-      <DecorWrapper showClouds={false} showMask={false}>
+      <DecorWrapper showClouds={false} showMask={false} showGrid>
         <div className="mt-8">
           <ProductShowcase />
         </div>

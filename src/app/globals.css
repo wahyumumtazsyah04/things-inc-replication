@@ -47,6 +47,11 @@
   --zenotika-gradient-night: radial-gradient(60% 60% at 50% 0%, rgba(107, 92, 255, 0.16), transparent 60%),
     radial-gradient(40% 40% at 10% 80%, rgba(0, 191, 255, 0.10), transparent 70%);
 
+  /* Page sweep overlay tokens */
+  --sweep-bg: linear-gradient(100deg, var(--zenotika-accent) 0%, color-mix(in srgb, var(--zenotika-accent) 75%, var(--background)) 35%, var(--background) 80%);
+  --sweep-opacity: 0.22;
+  --sweep-mask: url('/thingsinc/673a97406afd64c0cd3e355b_tunnel-with-mask.svg');
+
   /* Hero decorative positioning (defaults: mobile) */
   --hero-cloud-left-left: -6rem;
   --hero-cloud-left-top: 1.25rem;
@@ -122,24 +127,25 @@ p  { font-family: var(--font-sans); font-size: var(--fs-p); line-height: 1.72; l
 
 /* Fine-grained heading tweaks per breakpoint for 1:1 feel */
 @media (min-width: 1441px) {
-  h1 { letter-spacing: -0.02em; line-height: 1.12; }
-  h2 { letter-spacing: -0.016em; line-height: 1.15; }
+  /* Desktop XL: tighten tracking slightly and lower leading for hero-like headlines */
+  h1 { letter-spacing: -0.022em; line-height: 1.1; }
+  h2 { letter-spacing: -0.017em; line-height: 1.14; }
 }
 @media (min-width: 1200px) and (max-width: 1440px) {
-  h1 { letter-spacing: -0.019em; line-height: 1.14; }
-  h2 { letter-spacing: -0.015em; line-height: 1.16; }
+  h1 { letter-spacing: -0.02em; line-height: 1.12; }
+  h2 { letter-spacing: -0.016em; line-height: 1.16; }
 }
 @media (min-width: 992px) and (max-width: 1199px) {
-  h1 { letter-spacing: -0.018em; line-height: 1.16; }
-  h2 { letter-spacing: -0.014em; line-height: 1.18; }
+  h1 { letter-spacing: -0.0185em; line-height: 1.15; }
+  h2 { letter-spacing: -0.0145em; line-height: 1.18; }
 }
 @media (min-width: 768px) and (max-width: 991px) {
-  h1 { letter-spacing: -0.016em; line-height: 1.18; }
-  h2 { letter-spacing: -0.012em; line-height: 1.2; }
+  h1 { letter-spacing: -0.0165em; line-height: 1.18; }
+  h2 { letter-spacing: -0.0125em; line-height: 1.2; }
 }
 @media (max-width: 767px) {
-  h1 { letter-spacing: -0.014em; line-height: 1.2; }
-  h2 { letter-spacing: -0.01em; line-height: 1.22; }
+  h1 { letter-spacing: -0.014em; line-height: 1.22; }
+  h2 { letter-spacing: -0.01em; line-height: 1.24; }
 }
 a { color: var(--link); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1.25px; }
 a:hover { color: var(--link-hover); text-decoration-thickness: 2px; }
@@ -189,6 +195,15 @@ a:hover { color: var(--link-hover); text-decoration-thickness: 2px; }
   --header-bg: rgba(15, 14, 22, 0.55);
   --header-bg-blur: rgba(15, 14, 22, 0.4);
   --overlay-bg: rgba(15, 14, 22, 0.9);
+
+  /* Slightly stronger sweep at night for contrast */
+  --sweep-bg: linear-gradient(100deg, var(--zenotika-accent) 0%, color-mix(in srgb, var(--zenotika-accent) 80%, var(--background)) 40%, var(--background) 85%);
+  --sweep-opacity: 0.28;
+}
+
+/* Optional: switch sweep to wave mask by setting data-sweep="wave" on <html> */
+[data-sweep="wave"] {
+  --sweep-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'><path fill='white' d='M0,0 H100 V100 H0 Z'/><path fill='black' d='M0,0 H100 V0 C80,6 60,10 50,8 C40,6 20,2 0,0 Z'/></svg>");
 }
 
 /* Borders */
@@ -277,6 +292,39 @@ pre [data-highlighted-line] {
   mask-repeat: no-repeat;
   mask-size: cover;
   background: radial-gradient(ellipse at center, rgba(0,0,0,0.5), transparent 60%);
+}
+
+/* Overlay sweep element */
+.page-sweep-overlay {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: var(--sweep-bg);
+  opacity: var(--sweep-opacity);
+  -webkit-mask-image: var(--sweep-mask);
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: cover;
+  mask-image: var(--sweep-mask);
+  mask-repeat: no-repeat;
+  mask-size: cover;
+}
+
+/* Subtle grid background (reference-inspired) */
+.grid-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.18; /* toned for day; night will feel stronger over dark */
+  background-image:
+    radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--foreground) 20%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, transparent, transparent 70%, color-mix(in srgb, var(--foreground) 6%, transparent)),
+    linear-gradient(to top, transparent, transparent 70%, color-mix(in srgb, var(--foreground) 4%, transparent));
+  background-size: 20px 20px, 100% 100%, 100% 100%;
+  mix-blend-mode: normal;
+}
+@media (prefers-color-scheme: dark) {
+  .grid-bg { opacity: 0.22; }
 }
 
 /* Hero positioning via CSS variables for easy 1:1 tuning */
@@ -458,4 +506,79 @@ pre [data-highlighted-line] {
     --fs-h3: 18px;
     --fs-p: 15px;
   }
+}
+
+/* Exact viewport tuning for reference parity: 1440x900 */
+@media (width: 1440px) and (height: 900px) {
+  :root {
+    /* Hero decor positioning tuned for this viewport */
+    --hero-cloud-left-left: -8.75rem;
+    --hero-cloud-left-top: 2.25rem;
+    --hero-cloud-right-right: -9rem;
+    --hero-cloud-right-top: 7.75rem;
+    --hero-tv-right: 4.25rem;
+    --hero-tv-top: 2.35rem;
+    --hero-kid-left: 0.25rem;
+    --hero-kid-bottom: 3.1rem;
+    --hero-sling-right: 6.9rem;
+    --hero-sling-bottom: 2.35rem;
+    --hero-q-purple-right: 15.25rem;
+    --hero-q-purple-top: 6.9rem;
+    --hero-q-blue-left: 8.25rem;
+    --hero-q-blue-bottom: 4.85rem;
+
+    /* Typography scale keeps desktop-xl values */
+    --fs-h1: 56px;
+    --fs-h2: 40px;
+    --fs-h3: 28px;
+    --fs-p: 18px;
+  }
+  /* Tighten tracking/leading to match reference rhythm */
+  h1 { letter-spacing: -0.023em; line-height: 1.10; }
+  h2 { letter-spacing: -0.0175em; line-height: 1.14; }
+  p  { line-height: 1.74; }
+}
+
+/* Laptop range ~1280–1366 width */
+@media (min-width: 1280px) and (max-width: 1366px) {
+  :root {
+    --hero-cloud-left-left: -7.5rem;
+    --hero-cloud-left-top: 2.4rem;
+    --hero-cloud-right-right: -8.5rem;
+    --hero-cloud-right-top: 7.25rem;
+    --hero-tv-right: 3.6rem;
+    --hero-tv-top: 2.4rem;
+    --hero-kid-left: 0rem;
+    --hero-kid-bottom: 3rem;
+    --hero-sling-right: 6.5rem;
+    --hero-sling-bottom: 2.4rem;
+    --hero-q-purple-right: 14.5rem;
+    --hero-q-purple-top: 6.6rem;
+    --hero-q-blue-left: 7.7rem;
+    --hero-q-blue-bottom: 4.6rem;
+  }
+  h1 { letter-spacing: -0.021em; line-height: 1.12; }
+  h2 { letter-spacing: -0.0165em; line-height: 1.16; }
+}
+
+/* Large desktop range ~1536–1600 width */
+@media (min-width: 1536px) and (max-width: 1600px) {
+  :root {
+    --hero-cloud-left-left: -9.25rem;
+    --hero-cloud-left-top: 2.2rem;
+    --hero-cloud-right-right: -9.4rem;
+    --hero-cloud-right-top: 8.1rem;
+    --hero-tv-right: 4.5rem;
+    --hero-tv-top: 2.3rem;
+    --hero-kid-left: 0.35rem;
+    --hero-kid-bottom: 3.2rem;
+    --hero-sling-right: 7.1rem;
+    --hero-sling-bottom: 2.4rem;
+    --hero-q-purple-right: 15.6rem;
+    --hero-q-purple-top: 7.1rem;
+    --hero-q-blue-left: 8.5rem;
+    --hero-q-blue-bottom: 5rem;
+  }
+  h1 { letter-spacing: -0.023em; line-height: 1.1; }
+  h2 { letter-spacing: -0.0175em; line-height: 1.14; }
 }

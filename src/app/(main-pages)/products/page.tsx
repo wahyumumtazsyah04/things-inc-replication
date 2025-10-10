@@ -1,5 +1,6 @@
 import ProductShowcase from "@/components/features/ProductShowcase";
 import DecorWrapper from "@/components/decor/DecorWrapper";
+import SectionHeader from "@/components/ui/SectionHeader";
 
 export const metadata = {
   title: "Products",
@@ -9,10 +10,7 @@ export const metadata = {
 export default function ProductsPage() {
   return (
     <DecorWrapper>
-      <h1 className="text-3xl font-bold tracking-tight">Products</h1>
-      <p className="mt-3 max-w-2xl text-[17px] leading-7 text-[color:var(--zenotika-muted)]">
-        Discover our suite of tools designed to help teams ship faster and more reliably.
-      </p>
+      <SectionHeader title="Products" subtitle="Discover our suite of tools designed to help teams ship faster and more reliably." />
       <div className="mt-10">
         <ProductShowcase />
       </div>

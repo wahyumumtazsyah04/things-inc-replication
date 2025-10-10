@@ -6,6 +6,9 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Script from "next/script";
 import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider";
+import PageTransitionProvider from "@/components/providers/PageTransitionProvider";
+import CustomCursor from "@/components/ui/CustomCursor";
+import RouteChangeEffects from "@/components/providers/RouteChangeEffects";
 
 const fontSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -128,11 +131,17 @@ export default async function RootLayout({
         )}
         <SmoothScrollProvider>
           <Header />
-          <main id="main" className="min-h-[70vh]">
-            {children}
-          </main>
+          <PageTransitionProvider>
+            <main id="main" className="min-h-[70vh]">
+              {children}
+            </main>
+          </PageTransitionProvider>
           <Footer />
         </SmoothScrollProvider>
+        {/* Handle scroll + ScrollTrigger refresh on navigation */}
+        <RouteChangeEffects />
+        {/* Custom cursor for desktop pointers (hidden on touch automatically) */}
+        <CustomCursor />
       </body>
     </html>
   );
