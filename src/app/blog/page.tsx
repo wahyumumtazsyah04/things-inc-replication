@@ -1,10 +1,21 @@
 import Link from "next/link";
 import { listMDXPosts } from "@/lib/mdx";
 import DecorWrapper from "@/components/decor/DecorWrapper";
+import type { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Blog",
   description: "Articles and updates from Things, Inc.",
+  openGraph: {
+    title: "Blog",
+    description: "Articles and updates from Things, Inc.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog",
+    description: "Articles and updates from Things, Inc.",
+  },
 };
 
 export default function BlogIndexPage() {

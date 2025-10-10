@@ -13,6 +13,8 @@ export function useFadeInUp<T extends HTMLElement>(delay = 0) {
     const ref = useRef<T | null>(null);
     useEffect(() => {
         if (!ref.current) return;
+        const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduce) return;
         const ctx = gsap.context(() => {
             gsap.fromTo(
                 ref.current,
@@ -32,6 +34,8 @@ export function useScrollReveal<T extends HTMLElement>(
     const ref = useRef<T | null>(null);
     useEffect(() => {
         if (!ref.current) return;
+        const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduce) return;
         const ctx = gsap.context(() => {
             // Prefer :scope selector for direct children; fallback to '*' if unsupported
             let effectiveSelector = selector;
@@ -76,6 +80,8 @@ export function useParallax<T extends HTMLElement>(
     const ref = useRef<T | null>(null);
     useEffect(() => {
         if (!ref.current) return;
+        const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduce) return;
         const el = ref.current;
         if (mobileAmount != null) {
             const mm = gsap.matchMedia();
@@ -145,6 +151,8 @@ export function useParallaxScale<T extends HTMLElement>(
     const ref = useRef<T | null>(null);
     useEffect(() => {
         if (!ref.current) return;
+        const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduce) return;
         const el = ref.current;
         if (mobileAmount != null || mobileScaleFrom != null || mobileScaleTo != null) {
             const aMobile = mobileAmount ?? amount;
@@ -214,6 +222,8 @@ export function useIntroTimeline(targets: Array<RefObject<HTMLElement | null>> =
     useEffect(() => {
         const elements = targets.map((r) => r.current).filter(Boolean) as HTMLElement[];
         if (!elements.length) return;
+        const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduce) return;
         const ctx = gsap.context(() => {
             const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
             tl.fromTo(elements[0], { autoAlpha: 0, y: 18 }, { autoAlpha: 1, y: 0, duration: 0.85 })

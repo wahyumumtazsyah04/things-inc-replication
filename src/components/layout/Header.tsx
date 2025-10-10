@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import React from "react";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import Image from "next/image";
+import Magnetic from "@/components/ui/Magnetic";
 
 export default function Header() {
   const [open, setOpen] = React.useState(false);
@@ -78,13 +79,17 @@ export default function Header() {
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-7 text-[15px] text-[color:var(--foreground)]/80 sm:flex [text-decoration:none]">
-          <Link href="/products" className="hover:text-[color:var(--link-hover)] underline-offset-4 hover:underline">Products</Link>
-          <Link href="/pricing" className="hover:text-[color:var(--link-hover)] underline-offset-4 hover:underline">Pricing</Link>
-          <Link href="/blog" className="hover:text-[color:var(--link-hover)] underline-offset-4 hover:underline">Blog</Link>
-          <Link href="/company/about" className="hover:text-[color:var(--link-hover)] underline-offset-4 hover:underline">About</Link>
-          <Link href="#" className="rounded border px-3.5 py-1.5 hover:bg-[color:var(--zenotika-surface)] text-[color:var(--foreground)]/90 link-reset">Login</Link>
+          <Link href="/products" className="underline-anim hover:text-[color:var(--link-hover)]">Products</Link>
+          <Link href="/pricing" className="underline-anim hover:text-[color:var(--link-hover)]">Pricing</Link>
+          <Link href="/blog" className="underline-anim hover:text-[color:var(--link-hover)]">Blog</Link>
+          <Link href="/company/about" className="underline-anim hover:text-[color:var(--link-hover)]">About</Link>
+          <Magnetic>
+            <Link href="#" className="rounded border px-3.5 py-1.5 hover:bg-[color:var(--zenotika-surface)] text-[color:var(--foreground)]/90 link-reset">Login</Link>
+          </Magnetic>
           {/* Optional CTA icon/button */}
-          <Link href="/contact" className="rounded px-3.5 py-1.5 bg-[color:var(--zenotika-accent)] text-[color:var(--zenotika-accent-contrast)] hover:bg-[color:var(--zenotika-accent-hover)] link-reset">Contact</Link>
+          <Magnetic>
+            <Link href="/contact" className="rounded px-3.5 py-1.5 bg-[color:var(--zenotika-accent)] text-[color:var(--zenotika-accent-contrast)] hover:bg-[color:var(--zenotika-accent-hover)] link-reset">Contact</Link>
+          </Magnetic>
           <ThemeToggle className="ml-2" />
         </nav>
 

@@ -3,6 +3,10 @@ import React from "react";
 import { useFadeInUp, useParallax, useParallaxScale } from "@/lib/animations";
 import Link from "next/link";
 import Image from "next/image";
+import dynamic from "next/dynamic";
+import Magnetic from "@/components/ui/Magnetic";
+
+const PortalScene3D = dynamic(() => import("@/components/decor/PortalScene3D"), { ssr: false });
 
 export default function Hero() {
     const h1Ref = useFadeInUp<HTMLHeadingElement>(0);
@@ -61,6 +65,8 @@ export default function Hero() {
 
     return (
         <section className="section relative mx-auto max-w-6xl px-4 pt-16 sm:pt-20 md:pt-24 pb-14 sm:pb-16 md:pb-20">
+            {/* Lightweight 3D canvas (gated by prefers-reduced-motion) */}
+            <PortalScene3D />
             {/* Background mosaic (subtle) */}
             <div className="pointer-events-none absolute inset-0 -z-10 opacity-[0.06]">
                 <div className="absolute -left-20 top-10 hidden h-64 w-64 rotate-6 sm:block" style={{ backgroundImage: 'url(/thingsinc/67297fcb3d8968f4ca826780_hex_room_1.webp)', backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }} />
@@ -81,6 +87,8 @@ export default function Hero() {
                 width={360}
                 height={180}
                 className="theme-day-only pointer-events-none hero-cloud-left opacity-70 sm:opacity-80"
+                priority
+                sizes="(max-width: 768px) 60vw, 360px"
             />
             <Image
                 ref={cloudLeftNight}
@@ -90,6 +98,8 @@ export default function Hero() {
                 width={360}
                 height={180}
                 className="theme-night-only pointer-events-none hero-cloud-left opacity-70"
+                priority
+                sizes="(max-width: 768px) 60vw, 360px"
             />
             <Image
                 ref={cloudRightDay}
@@ -99,6 +109,8 @@ export default function Hero() {
                 width={400}
                 height={200}
                 className="theme-day-only pointer-events-none hero-cloud-right opacity-70 sm:opacity-80"
+                priority
+                sizes="(max-width: 768px) 60vw, 400px"
             />
             <Image
                 ref={cloudRightNight}
@@ -108,6 +120,8 @@ export default function Hero() {
                 width={400}
                 height={200}
                 className="theme-night-only pointer-events-none hero-cloud-right opacity-70"
+                priority
+                sizes="(max-width: 768px) 60vw, 400px"
             />
 
             <div ref={fgScaleRef} className="relative max-w-2xl">
@@ -118,20 +132,24 @@ export default function Hero() {
                     A clean Next.js foundation with Tailwind, wired for Things, Inc.-style animations, content, and growth.
                 </p>
                 <div className="mt-7 sm:mt-8 flex flex-wrap gap-2.5 sm:gap-3">
-                    <Link
-                        ref={cta1Ref}
-                        href="/products"
-                        className="inline-flex items-center justify-center rounded px-5 py-2.5 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 bg-[color:var(--zenotika-accent)] text-[color:var(--zenotika-accent-contrast)] hover:bg-[color:var(--zenotika-accent-hover)] focus-visible:ring-[color:var(--zenotika-ring)]"
-                    >
-                        Explore products
-                    </Link>
-                    <Link
-                        ref={cta2Ref}
-                        href="/pricing"
-                        className="inline-flex items-center justify-center rounded px-5 py-2.5 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 border border-[color:var(--border)] hover:bg-[color:var(--zenotika-surface)] text-[color:var(--foreground)] focus-visible:ring-[color:var(--zenotika-ring)]"
-                    >
-                        See pricing
-                    </Link>
+                    <Magnetic>
+                        <Link
+                            ref={cta1Ref}
+                            href="/products"
+                            className="inline-flex items-center justify-center rounded px-5 py-2.5 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 bg-[color:var(--zenotika-accent)] text-[color:var(--zenotika-accent-contrast)] hover:bg-[color:var(--zenotika-accent-hover)] focus-visible:ring-[color:var(--zenotika-ring)]"
+                        >
+                            Explore products
+                        </Link>
+                    </Magnetic>
+                    <Magnetic>
+                        <Link
+                            ref={cta2Ref}
+                            href="/pricing"
+                            className="inline-flex items-center justify-center rounded px-5 py-2.5 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 border border-[color:var(--border)] hover:bg-[color:var(--zenotika-surface)] text-[color:var(--foreground)] focus-visible:ring-[color:var(--zenotika-ring)]"
+                        >
+                            See pricing
+                        </Link>
+                    </Magnetic>
                 </div>
             </div>
 
@@ -145,6 +163,7 @@ export default function Hero() {
                 className="pointer-events-none hero-tv hidden opacity-90 sm:block"
                 aria-hidden="true"
                 priority={false}
+                sizes="(max-width: 768px) 20vw, 128px"
             />
             <Image
                 ref={kidRef}
@@ -155,6 +174,7 @@ export default function Hero() {
                 className="pointer-events-none hero-kid hidden sm:block"
                 aria-hidden="true"
                 priority={false}
+                sizes="(max-width: 768px) 20vw, 112px"
             />
             <Image
                 ref={slingRef}
@@ -165,6 +185,7 @@ export default function Hero() {
                 className="pointer-events-none hero-sling hidden sm:block"
                 aria-hidden="true"
                 priority={false}
+                sizes="(max-width: 768px) 20vw, 86px"
             />
 
             {/* Question mark decor */}
@@ -177,6 +198,7 @@ export default function Hero() {
                 className="pointer-events-none hero-q-purple hidden sm:block"
                 aria-hidden="true"
                 priority={false}
+                sizes="(max-width: 768px) 20vw, 56px"
             />
             <Image
                 ref={qBlueRef}
@@ -187,6 +209,7 @@ export default function Hero() {
                 className="pointer-events-none hero-q-blue hidden sm:block"
                 aria-hidden="true"
                 priority={false}
+                sizes="(max-width: 768px) 20vw, 52px"
             />
 
             {/* Scroll cue */}
