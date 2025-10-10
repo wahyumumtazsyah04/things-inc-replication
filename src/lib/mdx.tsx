@@ -15,6 +15,7 @@ export type MDXPost = {
   title: string;
   date?: string;
   summary?: string;
+  image?: string;
   content: string;
 };
 
@@ -35,6 +36,7 @@ export function getMDXBySlug(slug: string): MDXPost | null {
     title: data.title ?? slug,
     date: data.date,
     summary: data.summary,
+    image: data.image,
     content,
   };
 }
@@ -46,5 +48,12 @@ export function listMDXPosts(): Array<Pick<MDXPost, "slug" | "title" | "summary"
     .sort((a: MDXPost, b: MDXPost) => (a.date && b.date ? (a.date < b.date ? 1 : -1) : 0))
     .map(({ slug, title, summary, date }: MDXPost) => ({ slug, title, summary, date }));
 }
+
+export const mdxOptions = {
+  mdxOptions: {
+    remarkPlugins: [remarkGfm],
+    rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, { behavior: "wrap" }]],
+  },
+};
 
 

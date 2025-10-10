@@ -1,3 +1,4 @@
+import DecorWrapper from "@/components/decor/DecorWrapper";
 export const metadata = {
   title: "About",
   description: "Learn about Things, Inc.",
@@ -5,11 +6,11 @@ export const metadata = {
 
 export default function AboutPage() {
   return (
-    <section className="mx-auto max-w-6xl px-4 py-16">
+    <DecorWrapper>
       <h1 className="text-3xl font-bold tracking-tight">About Us</h1>
-      <p className="mt-3 text-gray-600 max-w-2xl">
+      <p className="mt-3 max-w-2xl text-[color:var(--zenotika-muted)]">
         We build delightful tools for modern teams.
       </p>
-    </section>
+    </DecorWrapper>
   );
 }

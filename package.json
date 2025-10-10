@@ -6,27 +6,33 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "copy:thingsinc": "node scripts/copy-thingsinc-assets.cjs"
   },
   "dependencies": {
-    "gray-matter": "^4.0.3",
-    "next": "15.5.4",
-    "next-mdx-remote": "^5.0.0",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "rehype-autolink-headings": "^7.1.0",
-    "rehype-slug": "^6.0.0",
-    "remark-gfm": "^4.0.1"
+    "d3": "latest",
+    "gray-matter": "latest",
+    "gsap": "latest",
+     "lenis": "latest",
+    "next": "latest",
+    "next-mdx-remote": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "rehype-autolink-headings": "latest",
+    "rehype-slug": "latest",
+    "remark-gfm": "latest"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "15.5.4",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "@eslint/eslintrc": "latest",
+    "@tailwindcss/postcss": "latest",
+    "@types/d3": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "eslint": "latest",
+    "eslint-config-next": "latest",
+    "rehype-pretty-code": "latest",
+    "tailwindcss": "latest",
+    "typescript": "latest"
   }
 }

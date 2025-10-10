@@ -14,6 +14,8 @@ export type MDXPost = {
   title: string;
   date?: string;
   summary?: string;
+  image?: string;
+  author?: string;
   content: string;
 };
 
@@ -29,13 +31,15 @@ export function getMDXBySlug(slug: string): MDXPost | null {
   if (!fs.existsSync(file)) return null;
   const raw = fs.readFileSync(file, "utf8");
     const { data, content } = matter(raw);
-    type FrontMatter = { title?: string; date?: string; summary?: string };
+    type FrontMatter = { title?: string; date?: string; summary?: string; image?: string; author?: string };
     const fm = data as FrontMatter;
   return {
     slug,
       title: fm.title ?? slug,
       date: fm.date,
       summary: fm.summary,
+      image: fm.image,
+      author: fm.author,
     content,
   };
 }
@@ -48,7 +52,9 @@ export function listMDXPosts(): Array<Pick<MDXPost, "slug" | "title" | "summary"
     .map(({ slug, title, summary, date }: MDXPost) => ({ slug, title, summary, date }));
 }
 
-export const mdxOptions = {
-  remarkPlugins: [remarkGfm],
-  rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, { behavior: "wrap" }]],
-};
+export function getMdxOptions() {
+  return {
+    remarkPlugins: [remarkGfm],
+    rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, { behavior: "wrap" }]],
+  };
+}

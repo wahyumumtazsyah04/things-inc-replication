@@ -1,26 +1,411 @@
 @import "tailwindcss";
 
 :root {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Plus Jakarta Sans", "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  /* Base surfaces */
   --background: #ffffff;
   --foreground: #171717;
+  --muted: #6b7280; /* gray-500/600 */
+  --border: #e5e7eb; /* gray-200 */
+
+  /* Header glass background (day) */
+  --header-bg: rgba(255, 255, 255, 0.7);
+  --header-bg-blur: rgba(255, 255, 255, 0.6);
+  --overlay-bg: rgba(255, 255, 255, 0.95);
+
+  /* Zenotika brand tokens */
+  --zenotika-accent: #6b5cff; /* primary accent */
+  --zenotika-accent-contrast: #ffffff;
+  --zenotika-accent-hover: color-mix(in srgb, var(--zenotika-accent) 88%, black);
+  --zenotika-ring: color-mix(in srgb, var(--zenotika-accent) 48%, white);
+  --zenotika-surface: #f8f9ff; /* subtle tinted surface */
+  --zenotika-surface-contrast: #0f1020;
+  --zenotika-muted: #707a98;
+
+  /* Links */
+  --link: var(--zenotika-accent);
+  --link-hover: color-mix(in srgb, var(--zenotika-accent) 80%, black);
+
+  /* Section rhythm */
+  --section-py: clamp(3rem, 8vw, 6rem);
+
+  /* Grid gap responsive variable */
+  --gap-vh: 2vh;
+
+  /* Typography scale approximating Webflow */
+  --fs-h1: clamp(2.375rem, 1.2rem + 2.4vw, 3.375rem); /* 38px -> 54px */
+  --lh-h1: 1.16; /* 44/38 ≈ 1.1579 */
+  --fs-h2: clamp(2rem, 1.1rem + 1.25vw, 2.5rem); /* 32px -> 40px */
+  --lh-h2: 1.125; /* 36/32 */
+  --fs-h3: clamp(1.5rem, 1.2rem + 0.5vw, 1.75rem); /* 24px -> 28px */
+  --lh-h3: 1.25; /* 30/24 */
+  --fs-p: clamp(1rem, 0.95rem + 0.3vw, 1.125rem); /* 16px -> ~18px */
+
+  /* Decorative gradients (used by wrappers) */
+  --zenotika-gradient-day: radial-gradient(60% 60% at 50% 0%, rgba(107, 92, 255, 0.08), transparent 60%),
+    radial-gradient(40% 40% at 10% 80%, rgba(0, 191, 255, 0.06), transparent 70%);
+  --zenotika-gradient-night: radial-gradient(60% 60% at 50% 0%, rgba(107, 92, 255, 0.16), transparent 60%),
+    radial-gradient(40% 40% at 10% 80%, rgba(0, 191, 255, 0.10), transparent 70%);
+
+  /* Hero decorative positioning (defaults: mobile) */
+  --hero-cloud-left-left: -6rem;
+  --hero-cloud-left-top: 1.25rem;
+  --hero-cloud-right-right: -7rem;
+  --hero-cloud-right-top: 5rem;
+  --hero-tv-right: 1.5rem;
+  --hero-tv-top: 1.25rem;
+  --hero-kid-left: -2rem;
+  --hero-kid-bottom: 2rem;
+  --hero-sling-right: 4rem;
+  --hero-sling-bottom: 1.5rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* Theme tokens could be placed here if needed using CSS variables */
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0f0e16;
+    --foreground: #cbcfff;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "liga" 1, "kern" 1, "calt" 1, "ss01" 0;
+  font-variation-settings: "opsz" 14;
+}
+
+/* Root font-size mapping inspired by Webflow export for closer 1:1 scaling */
+html { font-size: 1.25rem; }
+@media screen and (min-width: 2560px) { html { font-size: 1rem; } }
+@media screen and (max-width: 2559px) { html { font-size: calc(0.375rem + 0.4166666667vw); } }
+@media screen and (max-width: 1920px) { html { font-size: calc(0.375rem + 0.4166666667vw); } }
+@media screen and (max-width: 1440px) { html { font-size: calc(0.375rem + 0.4166666667vw); } }
+@media screen and (max-width: 1200px) { html { font-size: calc(0.3286483254rem + 0.4784688995vw); } }
+@media screen and (max-width: 991px) { html { font-size: 0.8rem; } }
+@media screen and (max-width: 479px) { html { font-size: calc(0.7494769874rem + 0.8368200837vw); } }
+
+/* Subtle page-wide gradient hint; stronger at night via [data-theme] */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background: var(--zenotika-gradient-day);
+}
+[data-theme="night"] body::before {
+  background: var(--zenotika-gradient-night);
+}
+
+/* Theme helpers */
+.theme-day-only { display: inline; }
+.theme-night-only { display: none; }
+[data-theme="night"] .theme-day-only { display: none; }
+[data-theme="night"] .theme-night-only { display: inline; }
+
+.logo-day { display: inline; }
+.logo-night { display: none; }
+[data-theme="night"] .logo-day { display: none; }
+[data-theme="night"] .logo-night { display: inline; }
+
+/* Global type scale */
+h1 { font-family: var(--font-sans); font-weight: 700; font-size: var(--fs-h1); line-height: var(--lh-h1); letter-spacing: -0.018em; }
+h2 { font-family: var(--font-sans); font-weight: 700; font-size: var(--fs-h2); line-height: var(--lh-h2); letter-spacing: -0.014em; }
+h3 { font-family: var(--font-sans); font-weight: 600; font-size: var(--fs-h3); line-height: var(--lh-h3); letter-spacing: -0.006em; }
+p  { font-family: var(--font-sans); font-size: var(--fs-p); line-height: 1.72; letter-spacing: 0; hyphens: auto; }
+
+/* Fine-grained heading tweaks per breakpoint for 1:1 feel */
+@media (min-width: 1441px) {
+  h1 { letter-spacing: -0.02em; line-height: 1.12; }
+  h2 { letter-spacing: -0.016em; line-height: 1.15; }
+}
+@media (min-width: 1200px) and (max-width: 1440px) {
+  h1 { letter-spacing: -0.019em; line-height: 1.14; }
+  h2 { letter-spacing: -0.015em; line-height: 1.16; }
+}
+@media (min-width: 992px) and (max-width: 1199px) {
+  h1 { letter-spacing: -0.018em; line-height: 1.16; }
+  h2 { letter-spacing: -0.014em; line-height: 1.18; }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  h1 { letter-spacing: -0.016em; line-height: 1.18; }
+  h2 { letter-spacing: -0.012em; line-height: 1.2; }
+}
+@media (max-width: 767px) {
+  h1 { letter-spacing: -0.014em; line-height: 1.2; }
+  h2 { letter-spacing: -0.01em; line-height: 1.22; }
+}
+a { color: var(--link); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1.25px; }
+a:hover { color: var(--link-hover); text-decoration-thickness: 2px; }
+/* Utility to reset link decoration for button-like links */
+.link-reset { text-decoration: none !important; }
+
+/* Night theme palette */
+[data-theme="night"] {
+  /* Night theme palette aligned with Things Inc */
+  --background: #0f0e16;            /* dark background */
+  --foreground: #cbcfff;            /* light lavender text */
+  --muted: #d2d6ff;                 /* softer text (raised for contrast) */
+  --border: #22243b;                /* subtle borders */
+  --link: #cbcfff;                  /* links = light lavender */
+  --link-hover: #ffffff;            /* hover brighter */
+
+  /* Accents map to Things Inc UI (button-background/text) */
+  --zenotika-accent: #cbcfff;       /* button bg night */
+  --zenotika-accent-contrast: #07002f; /* button text night */
+  --zenotika-accent-hover: color-mix(in srgb, #cbcfff 90%, #07002f);
+  --zenotika-ring: color-mix(in srgb, #cbcfff 55%, #ffffff);
+  --zenotika-surface: #0b0a18;      /* tinted surface */
+  --zenotika-surface-contrast: #e9eaff; /* surface fg */
+
+  /* Header glass background (night) */
+  --header-bg: rgba(15, 14, 22, 0.55);
+  --header-bg-blur: rgba(15, 14, 22, 0.4);
+  --overlay-bg: rgba(15, 14, 22, 0.9);
+}
+
+/* Borders */
+hr, .border { border-color: var(--border); }
+
+/* Prose (blog) tweaks */
+.prose :where(blockquote):not(:where([class~="not-prose"] *)) {
+  border-left: 3px solid var(--border);
+  padding-left: 1rem;
+  color: color-mix(in srgb, var(--foreground) 85%, transparent);
+  font-style: italic;
+}
+.prose :where(ul>li)::marker { color: var(--muted); }
+.prose :where(a) { color: var(--link); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.prose :where(a:hover) { color: var(--link-hover); text-decoration-thickness: 2px; }
+.prose :where(h1,h2) { letter-spacing: -0.012em; }
+.prose :where(h3,h4) { letter-spacing: -0.006em; }
+.prose :where(h1,h2,h3,h4) { color: var(--foreground); }
+
+/* Selection colors aligned to brand */
+::selection {
+  background: color-mix(in srgb, var(--zenotika-accent) 25%, transparent);
+  color: var(--foreground);
+}
+
+/* Code highlighting tweaks */
+pre code {
+  counter-reset: line;
+}
+pre [data-line]::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  width: 2ch;
+  margin-right: 1rem;
+  text-align: right;
+  color: color-mix(in srgb, var(--foreground) 45%, transparent);
+}
+pre [data-highlighted-line] {
+  background: color-mix(in srgb, var(--foreground) 8%, transparent);
+}
+
+/* Utility classes (optional) to emulate Webflow bits safely */
+.section {
+  padding-block: var(--section-py);
+}
+
+.grid-gap-responsive {
+  row-gap: var(--gap-vh);
+}
+
+/* Grid template helpers for common patterns */
+.grid-cols-1-1-08 {
+  grid-template-columns: 1fr 1fr 0.8fr;
+}
+.grid-cols-1-1 {
+  grid-template-columns: 1fr 1fr;
+}
+.grid-cols-1 {
+  grid-template-columns: 1fr;
+}
+
+.tunnel-mask-soft {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0.2;
+  -webkit-mask-image: url('/thingsinc/673a97406afd64c0cd3e355b_tunnel-with-mask.svg');
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: cover;
+  mask-image: url('/thingsinc/673a97406afd64c0cd3e355b_tunnel-with-mask.svg');
+  mask-repeat: no-repeat;
+  mask-size: cover;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.35), transparent 60%);
+}
+
+.tunnel-mask-strong {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  -webkit-mask-image: url('/thingsinc/673a97406afd64c0cd3e355b_tunnel-with-mask.svg');
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: cover;
+  mask-image: url('/thingsinc/673a97406afd64c0cd3e355b_tunnel-with-mask.svg');
+  mask-repeat: no-repeat;
+  mask-size: cover;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.5), transparent 60%);
+}
+
+/* Hero positioning via CSS variables for easy 1:1 tuning */
+.hero-cloud-left { position: absolute; left: var(--hero-cloud-left-left); top: var(--hero-cloud-left-top); }
+.hero-cloud-right { position: absolute; right: var(--hero-cloud-right-right); top: var(--hero-cloud-right-top); }
+.hero-tv { position: absolute; right: var(--hero-tv-right); top: var(--hero-tv-top); }
+.hero-kid { position: absolute; left: var(--hero-kid-left); bottom: var(--hero-kid-bottom); }
+.hero-sling { position: absolute; right: var(--hero-sling-right); bottom: var(--hero-sling-bottom); }
+/* New question mark decor */
+.hero-q-purple { position: absolute; right: var(--hero-q-purple-right, 12rem); top: var(--hero-q-purple-top, 6rem); opacity: 0.9; }
+.hero-q-blue { position: absolute; left: var(--hero-q-blue-left, 8rem); bottom: var(--hero-q-blue-bottom, 4.5rem); opacity: 0.9; }
+
+/* Tablet/Desktop tuning */
+@media (min-width: 768px) {
+  :root {
+    --hero-cloud-left-left: -6rem; --hero-cloud-left-top: 2rem;
+    --hero-cloud-right-right: -7rem; --hero-cloud-right-top: 6rem;
+    --hero-tv-right: 2rem; --hero-tv-top: 2rem;
+    --hero-kid-left: -1.5rem; --hero-kid-bottom: 2.5rem;
+    --hero-sling-right: 5rem; --hero-sling-bottom: 2rem;
+    --hero-q-purple-right: 13rem; --hero-q-purple-top: 6rem;
+    --hero-q-blue-left: 7rem; --hero-q-blue-bottom: 4rem;
+  }
+}
+@media (min-width: 1024px) { /* ~1024 (tablet landscape) */
+  :root {
+    --hero-cloud-left-left: -6rem; --hero-cloud-left-top: 2.25rem;
+    --hero-cloud-right-right: -7rem; --hero-cloud-right-top: 6.5rem;
+    --hero-tv-right: 2.5rem; --hero-tv-top: 2.25rem;
+    --hero-kid-left: -1.25rem; --hero-kid-bottom: 2.75rem;
+    --hero-sling-right: 5.5rem; --hero-sling-bottom: 2.25rem;
+    --hero-q-purple-right: 13.5rem; --hero-q-purple-top: 6.25rem;
+    --hero-q-blue-left: 7.25rem; --hero-q-blue-bottom: 4.25rem;
+  }
+}
+@media (min-width: 1280px) { /* ~1280 (desktop) */
+  :root {
+    --hero-cloud-left-left: -6.5rem; --hero-cloud-left-top: 2.5rem;
+    --hero-cloud-right-right: -7.5rem; --hero-cloud-right-top: 7rem;
+    --hero-tv-right: 3rem; --hero-tv-top: 2.5rem;
+    --hero-kid-left: -1rem; --hero-kid-bottom: 3rem;
+    --hero-sling-right: 6rem; --hero-sling-bottom: 2.5rem;
+    --hero-q-purple-right: 14rem; --hero-q-purple-top: 6.5rem;
+    --hero-q-blue-left: 7.5rem; --hero-q-blue-bottom: 4.5rem;
+  }
+}
+@media (min-width: 1440px) { /* ~1440 (desktop wide) */
+  :root {
+    /* Tuned for 1440×900: adjust as needed for pixel-perfect match */
+    --hero-cloud-left-left: -8.5rem;  /* was -7rem */
+    --hero-cloud-left-top: 2.5rem;    /* was 2.75rem */
+    --hero-cloud-right-right: -8.75rem; /* was -8rem */
+    --hero-cloud-right-top: 8rem;     /* was 7.5rem */
+    --hero-tv-right: 4rem;            /* was 3.5rem */
+    --hero-tv-top: 2.25rem;           /* was 2.75rem */
+    --hero-kid-left: 0rem;            /* was -0.5rem */
+    --hero-kid-bottom: 3.25rem;       /* same */
+    --hero-sling-right: 6.75rem;      /* was 6.5rem */
+    --hero-sling-bottom: 2.5rem;      /* was 2.75rem */
+    --hero-q-purple-right: 15rem;     /* tune for wide */
+    --hero-q-purple-top: 7rem;
+    --hero-q-blue-left: 8rem;
+    --hero-q-blue-bottom: 5rem;
+  }
+}
+
+/* Skip to content accessibility helper */
+.skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.5rem;
+  transform: translateY(-150%);
+  background: var(--zenotika-accent);
+  color: var(--zenotika-accent-contrast);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.15);
+  transition: transform 0.2s ease;
+  z-index: 100;
+}
+.skip-link:focus { transform: translateY(0); outline: none; }
+
+/* Grid spacing util: row-gap ~2vh on laptop range like Webflow example */
+@media (min-width: 992px) and (max-width: 1440px) {
+  .grid-gap-2vh { row-gap: 2vh; }
+}
+
+/* Breakpoint fine-tuning for typography and grid gaps */
+@media (min-width: 1441px) {
+  :root {
+    /* Desktop-xl: target ~56/40/28/18 px */
+    --gap-vh: 2.4vh;
+    --fs-h1: 56px;
+    --fs-h2: 40px;
+    --fs-h3: 28px;
+    --fs-p: 18px;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1440px) {
+  :root {
+    /* Desktop: ~52/38/26/17 px */
+    --gap-vh: 2.1vh;
+    --fs-h1: 52px;
+    --fs-h2: 38px;
+    --fs-h3: 26px;
+    --fs-p: 17px;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+  :root {
+    /* Laptop: ~48/34/24/16.5 px */
+    --gap-vh: 1.8vh;
+    --fs-h1: 48px;
+    --fs-h2: 34px;
+    --fs-h3: 24px;
+    --fs-p: 16.5px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  :root {
+    /* Tablet: ~42/30/22/16 px */
+    --gap-vh: 1.4vh;
+    --fs-h1: 42px;
+    --fs-h2: 30px;
+    --fs-h3: 22px;
+    --fs-p: 16px;
+  }
+}
+
+@media (min-width: 480px) and (max-width: 767px) {
+  :root {
+    /* Mobile landscape: ~36/26/20/15.5 px */
+    --gap-vh: 1.1vh;
+    --fs-h1: 36px;
+    --fs-h2: 26px;
+    --fs-h3: 20px;
+    --fs-p: 15.5px;
+  }
+}
+
+@media (max-width: 479px) {
+  :root {
+    /* Mobile portrait: ~32/24/18/15 px */
+    --gap-vh: 0.9vh;
+    --fs-h1: 32px;
+    --fs-h2: 24px;
+    --fs-h3: 18px;
+    --fs-p: 15px;
+  }
 }

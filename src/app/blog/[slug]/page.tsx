@@ -1,9 +1,13 @@
 import { notFound } from "next/navigation";
-import { getMDXBySlug, listMDXSlugs, mdxOptions } from "@/lib/mdx";
+import { getMDXBySlug, listMDXSlugs } from "@/lib/mdx";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import MDXComponents from "@/components/mdx/MDXComponents";
+import Script from "next/script";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import rehypePrettyCode from "rehype-pretty-code";
+import DecorWrapper from "@/components/decor/DecorWrapper";
 
 type Params = { params: { slug: string } };
 
@@ -13,27 +17,69 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Params) {
   const post = getMDXBySlug(params.slug);
+  const title = post ? post.title : "Post";
+  const description = post?.summary ?? undefined;
+  const ogUrl = post?.image ? post.image : `/api/og/blog/${params.slug}`;
+  const ogImages = ogUrl ? [{ url: ogUrl }] : undefined;
   return {
-    title: post ? post.title : "Post",
-    description: post?.summary ?? undefined,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      images: ogImages,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ogImages?.map((i) => i.url),
+    },
   };
 }
 
 export default function BlogPostPage({ params }: Params) {
   const post = getMDXBySlug(params.slug);
   if (!post) return notFound();
-  return (
-    <article className="mx-auto max-w-3xl px-4 py-16 prose prose-zinc">
-      <h1>{post.title}</h1>
-      <MDXRemote
-        source={post.content}
-        options={{
-          mdxOptions: {
-            remarkPlugins: [remarkGfm],
-            rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, { behavior: "wrap" }]],
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.summary,
+    datePublished: post.date,
+  };
+  // Cast to satisfy next-mdx-remote SerializeOptions typing in RSC mode
+  const serializeOptions = ({
+    mdxOptions: {
+      remarkPlugins: [remarkGfm],
+      rehypePlugins: [
+        rehypeSlug,
+        [rehypeAutolinkHeadings, { behavior: "wrap" }],
+        [
+          rehypePrettyCode,
+          {
+            theme: {
+              dark: "one-dark-pro",
+              light: "github-light",
+            },
+            keepBackground: false,
           },
-        }}
-      />
-    </article>
+        ],
+      ],
+    },
+  } as unknown) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  return (
+    <DecorWrapper>
+      <article className="mx-auto max-w-3xl prose prose-zinc">
+        <Script id="post-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+        <h1>{post.title}</h1>
+        <MDXRemote
+          source={post.content}
+          options={serializeOptions}
+          components={MDXComponents}
+        />
+      </article>
+    </DecorWrapper>
   );
 }
