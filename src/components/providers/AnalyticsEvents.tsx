@@ -3,8 +3,8 @@ import React from "react";
 
 declare global {
   interface Window {
-    dataLayer?: any[];
-    gtag?: (...args: any[]) => void;
+    dataLayer?: Array<Record<string, unknown>>;
+    gtag?: (command: string, eventName: string, params?: Record<string, unknown>) => void;
   }
 }
 
@@ -20,7 +20,7 @@ export default function AnalyticsEvents() {
   React.useEffect(() => {
     if (!enabled || typeof window === "undefined") return;
 
-    const gtagSafe = (event: string, params: Record<string, any> = {}) => {
+    const gtagSafe = (event: string, params: Record<string, unknown> = {}) => {
       try {
         if (typeof window.gtag === "function") {
           window.gtag("event", event, params);

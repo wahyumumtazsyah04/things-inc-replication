@@ -3,6 +3,13 @@ import { NextResponse } from "next/server";
 
 // Request client hints for color scheme so we can SSR a better initial theme
 export function middleware(req: NextRequest) {
+  // Optional redirect root -> /story for unified narrative
+  if (process.env.NODE_ENV === "production" && req.nextUrl.pathname === "/") {
+    const url = req.nextUrl.clone();
+    url.pathname = "/story";
+    return NextResponse.redirect(url);
+  }
+
   const res = NextResponse.next();
   // Hint the browser to send Sec-CH-Prefers-Color-Scheme
   res.headers.set("Accept-CH", "Sec-CH-Prefers-Color-Scheme");

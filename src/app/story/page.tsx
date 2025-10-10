@@ -1,12 +1,19 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import AmbientClouds from "@/components/decor/AmbientClouds";
 import { usePrefersReducedMotion } from "@/lib/reduced-motion";
 import { useCollectibles } from "@/components/providers/CollectiblesProvider";
+import type { CollectibleKey } from "@/components/providers/CollectiblesProvider";
 import MotionToggle from "@/components/ui/MotionToggle";
 import Image from "next/image";
+import { useOrchestrator, type SceneConfig } from "@/lib/orchestrator";
+import { useSceneTelemetry } from "@/lib/analytics";
+import dynamic from "next/dynamic";
+const PortalScene3D = dynamic(() => import("@/components/decor/PortalScene3D"), { ssr: false });
+const IrisMask = dynamic(() => import("@/components/decor/IrisMask"), { ssr: false });
+const PixelAuditOverlay = dynamic(() => import("@/components/ui/PixelAuditOverlay"), { ssr: false });
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -31,58 +38,79 @@ function Section({ id, title, children }: { id: string; title: string; children?
 export default function StoryPage() {
     const reduce = usePrefersReducedMotion();
     const { add } = useCollectibles();
+    const telemetry = useSceneTelemetry();
 
     const s1 = useRef<HTMLDivElement>(null);
     const s2 = useRef<HTMLDivElement>(null);
     const s3 = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        if (reduce) return;
-        const ctx = gsap.context(() => {
-            const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
-            tl.addLabel("intro")
-                .fromTo("#s1 .card", { autoAlpha: 0, y: 30 }, { autoAlpha: 1, y: 0, duration: 0.8 })
-                .addLabel("bridge")
-                .to("#s1 .card", { scale: 0.98, duration: 0.5, autoAlpha: 0.9 })
-                .addLabel("room2")
-                .fromTo("#s2 .card", { autoAlpha: 0, y: 34 }, { autoAlpha: 1, y: 0, duration: 0.8 })
-                .to("#s2 .card", { rotate: -1.5, y: -6, duration: 0.5 }, ">-=0.3")
-                .addLabel("room3")
-                .fromTo("#s3 .card", { autoAlpha: 0, y: 34 }, { autoAlpha: 1, y: 0, duration: 0.8 });
+    // Orchestrator: 3 scenes stitched via global progress 0..1
+    // Track portal progress (scene 2 as example)
+    const portalProgressRef = useRef(0);
 
-            // Pin each section and scrub timeline through them
-            [
-                { el: s1.current, start: 0, end: 1 / 3 },
-                { el: s2.current, start: 1 / 3, end: 2 / 3 },
-                { el: s3.current, start: 2 / 3, end: 1 },
-            ].forEach(({ el, start, end }) => {
-                if (!el) return;
-                ScrollTrigger.create({
-                    trigger: el,
-                    start: "top top+=64px",
-                    end: "bottom top+=64px",
-                    pin: true,
-                    pinSpacing: false,
-                    scrub: true,
-                    onUpdate: (self) => {
-                        const progress = self.progress; // 0..1 of current section
-                        const global = start + (end - start) * progress;
-                        tl.progress(global).pause();
-                    },
-                });
-            });
-        });
-        return () => ctx.revert();
-    }, [reduce]);
+    useOrchestrator(
+        [
+            {
+                id: "room1",
+                el: s1.current,
+                start: 0,
+                end: 1 / 3,
+                pin: true,
+                create: (root) => gsap.timeline({ defaults: { ease: "power2.out" } })
+                    .fromTo(root.querySelector(".card"), { autoAlpha: 0, y: 30 }, { autoAlpha: 1, y: 0, duration: 0.8 }),
+            },
+            {
+                id: "room2",
+                el: s2.current,
+                start: 1 / 3,
+                end: 2 / 3,
+                pin: true,
+                create: (root) => gsap.timeline({ defaults: { ease: "power2.out" } })
+                    .fromTo(root.querySelector(".card"), { autoAlpha: 0, y: 34 }, { autoAlpha: 1, y: 0, duration: 0.8 })
+                    .to(root.querySelector(".card"), { rotate: -1.5, y: -6, duration: 0.5 }, ">-=0.3"),
+            },
+            {
+                id: "room3",
+                el: s3.current,
+                start: 2 / 3,
+                end: 1,
+                pin: true,
+                create: (root) => gsap.timeline({ defaults: { ease: "power2.out" } })
+                    .fromTo(root.querySelector(".card"), { autoAlpha: 0, y: 34 }, { autoAlpha: 1, y: 0, duration: 0.8 }),
+            },
+        ] as SceneConfig[],
+        {
+            onProgress: (id, p) => {
+                telemetry.progress(id, p);
+                if (id === "room2") portalProgressRef.current = p;
+            },
+            onEnter: telemetry.enter,
+            onExit: telemetry.exit,
+            enableSnap: true,
+            extraSnapPoints: [0.16, 0.33, 0.5, 0.66, 0.83],
+            topOffsetPx: 64,
+        }
+    );
 
     // Collectibles interactions (tap/click)
-    const pick = (id: string) => () => {
-        add(id as any, 1);
-        try { (window as any)?.gtag?.("event", "collectible_pick", { id }); } catch { }
+    const pick = (id: CollectibleKey) => () => {
+        add(id, 1);
+        try {
+            if (typeof window !== "undefined" && "gtag" in window && typeof (window as Window & { gtag?: (cmd: string, name?: string, params?: Record<string, unknown>) => void }).gtag === "function") {
+                (window as Window & { gtag?: (cmd: string, name?: string, params?: Record<string, unknown>) => void }).gtag!("event", "collectible_pick", { id });
+            }
+        } catch { }
     };
+
+    // IrisMask sync: tampil saat transisi antar scene (contoh: menjelang masuk scene 2)
+    const irisShow = !reduce && portalProgressRef.current > 0.05 && portalProgressRef.current < 0.95;
+    const auditSrc = process.env.NEXT_PUBLIC_PIXEL_AUDIT_SRC;
 
     return (
         <div className="relative">
+            {/* Portal reveal synced to second scene progress */}
+            {!reduce && <PortalScene3D progress={portalProgressRef.current} />}
+            <IrisMask show={irisShow} />
             <div className="sticky top-16 z-10 flex items-center justify-center gap-3 bg-[color:var(--header-bg)] px-3 py-2 text-xs backdrop-blur supports-[backdrop-filter]:bg-[color:var(--header-bg-blur)] sm:top-[72px]">
                 <span className="text-[color:var(--foreground)]/70">Demo scrollytelling: pinned sections + ambient clouds</span>
                 <MotionToggle />
@@ -132,6 +160,7 @@ export default function StoryPage() {
                     </div>
                 </Section>
             </div>
+            {auditSrc ? <PixelAuditOverlay src={auditSrc} initiallyVisible={false} /> : null}
         </div>
     );
 }

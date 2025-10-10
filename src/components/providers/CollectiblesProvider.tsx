@@ -44,7 +44,9 @@ export function CollectiblesProvider({ children }: { children: React.ReactNode }
       const next = { ...s, [item]: Math.max(0, (s[item] ?? 0) + qty) } as CollectiblesState;
       // Optional analytics event
       try {
-        (window as any)?.gtag?.("event", "collectible_add", { item, qty, total: next[item] });
+        if (typeof window !== "undefined" && "gtag" in window && typeof (window as Window & { gtag?: (cmd: string, name?: string, params?: Record<string, unknown>) => void }).gtag === "function") {
+          (window as Window & { gtag?: (cmd: string, name?: string, params?: Record<string, unknown>) => void }).gtag!("event", "collectible_add", { item, qty, total: next[item] });
+        }
       } catch {}
       return next;
     });

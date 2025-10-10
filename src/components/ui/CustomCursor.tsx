@@ -14,6 +14,11 @@ export default function CustomCursor() {
     const target = React.useRef({ x: 0, y: 0 });
     const pos = React.useRef({ x: 0, y: 0 });
     const mounted = React.useRef(false);
+    const [isMounted, setIsMounted] = React.useState(false);
+
+    React.useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     React.useEffect(() => {
         // Skip on SSR, reduced motion, or no fine pointer
@@ -24,7 +29,8 @@ export default function CustomCursor() {
 
         mounted.current = true;
 
-        const el = ref.current!;
+        const el = ref.current;
+        if (!el) return;
 
         const onMove = (e: MouseEvent) => {
             target.current.x = e.clientX;
@@ -33,10 +39,15 @@ export default function CustomCursor() {
         };
 
         const tick = () => {
+            const elNow = ref.current;
+            if (!elNow) {
+                rafRef.current = null;
+                return;
+            }
             const speed = 0.22; // smoothing factor
             pos.current.x += (target.current.x - pos.current.x) * speed;
             pos.current.y += (target.current.y - pos.current.y) * speed;
-            el.style.transform = `translate3d(${pos.current.x}px, ${pos.current.y}px, 0)`;
+            elNow.style.transform = `translate3d(${pos.current.x}px, ${pos.current.y}px, 0)`;
             // Continue animating while significant delta remains
             if (Math.abs(target.current.x - pos.current.x) > 0.1 || Math.abs(target.current.y - pos.current.y) > 0.1) {
                 rafRef.current = requestAnimationFrame(tick);
@@ -76,10 +87,10 @@ export default function CustomCursor() {
         };
     }, []);
 
-    // Don't render anything on server to avoid hydration mismatch
-    if (typeof window === "undefined") return null;
-    const reduce = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const finePointer = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    // Render nothing on server and on the initial hydration render
+    if (!isMounted) return null;
+    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const finePointer = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     if (reduce || !finePointer) return null;
 
     return (

@@ -79,6 +79,16 @@ function Img(props: MdxImgProps) {
             />
         );
     }
+    // For MDX content without explicit dimensions, use fill layout to keep Next/Image benefits.
+    if (typeof src === "string" && src.length > 0) {
+        return (
+            <span className={`relative block overflow-hidden rounded ${className ?? ""}`} style={{ aspectRatio: "16/9" }}>
+                <Image src={src} alt={alt} fill sizes="(min-width: 640px) 50vw, 100vw" className="object-cover" />
+            </span>
+        );
+    }
+    // Final fallback if src invalid
+    // eslint-disable-next-line @next/next/no-img-element
     return <img src={src} alt={alt} className={`rounded ${className ?? ""}`} />;
 }
 

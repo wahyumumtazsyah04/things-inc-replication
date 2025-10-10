@@ -5,14 +5,15 @@ import type { RootState } from "@react-three/fiber";
 import * as THREE from "three";
 import { useAmbience } from "@/components/providers/AmbienceProvider";
 
-function DisplacedPlane({ amp = 0.15, colorA = new THREE.Color(0.35, 0.36, 0.6), colorB = new THREE.Color(0.2, 0.2, 0.35), alpha = 0.65 }) {
+function DisplacedPlane({ amp = 0.15, colorA = new THREE.Color(0.35, 0.36, 0.6), colorB = new THREE.Color(0.2, 0.2, 0.35), alpha = 0.65, reveal = 1 }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
       uAmp: { value: amp },
+      uReveal: { value: reveal },
     }),
-    [amp]
+    [amp, reveal]
   );
   useFrame((_state: RootState, delta: number) => {
     uniforms.uTime.value += delta;
@@ -31,13 +32,15 @@ function DisplacedPlane({ amp = 0.15, colorA = new THREE.Color(0.35, 0.36, 0.6),
     }
   `;
   const fragment = /* glsl */`
+    uniform float uReveal;
     varying vec2 vUv;
     void main() {
-      // soft vignette
+      // radial mask based on uReveal (0 closed -> 1 open)
       float d = distance(vUv, vec2(0.5));
+      float iris = smoothstep(0.5 * (1.0 - uReveal), 0.2 * (1.0 - uReveal), d);
       float vignette = smoothstep(0.9, 0.2, d);
       vec3 color = mix(vec3(${(colorA.r).toFixed(3)}, ${(colorA.g).toFixed(3)}, ${(colorA.b).toFixed(3)}), vec3(${(colorB.r).toFixed(3)}, ${(colorB.g).toFixed(3)}, ${(colorB.b).toFixed(3)}), d);
-      gl_FragColor = vec4(color * vignette, ${alpha.toFixed(2)});
+      gl_FragColor = vec4(color * vignette, ${alpha.toFixed(2)}) * iris;
     }
   `;
 
@@ -81,7 +84,7 @@ function ParallaxRig() {
   );
 }
 
-export default function PortalScene3D() {
+export default function PortalScene3D({ progress = 1 }: { progress?: number }) {
   const [enabled, setEnabled] = useState(false);
   const { theme } = useAmbience();
   useEffect(() => {
@@ -95,6 +98,10 @@ export default function PortalScene3D() {
         <ambientLight intensity={theme === 'night' ? 0.45 : 0.6} />
         <directionalLight position={[3, 5, 2]} intensity={theme === 'night' ? 0.55 : 0.7} color={theme === 'night' ? new THREE.Color(0.7,0.75,1) : new THREE.Color(1,0.95,0.9)} />
         <ParallaxRig />
+        {/* Reveal overlay plane synced to progress */}
+        <group position={[0,0,0.25]}>
+          <DisplacedPlane amp={0.08} alpha={0.5} reveal={progress} />
+        </group>
         {/* Fake bloom/vignette: subtle screen-space quad overlay using CSS handled in parent wrapper */}
       </Canvas>
     </div>

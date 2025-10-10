@@ -1,9 +1,12 @@
 "use client";
+import React from "react";
 import Image from "next/image";
 import { useAmbience } from "@/components/providers/AmbienceProvider";
 
 export default function ThemeToggle({ className = "" }: { className?: string }) {
     const { mode, theme, setMode } = useAmbience();
+    const [mounted, setMounted] = React.useState(false);
+    React.useEffect(() => setMounted(true), []);
 
     // Cycle: auto -> day -> night -> auto
     const onClick = () => {
@@ -12,7 +15,7 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
         else setMode("auto");
     };
 
-    const label = mode === "auto" ? `Theme: Auto (${theme})` : `Theme: ${mode}`;
+    const label = mounted ? (mode === "auto" ? `Theme: Auto (${theme})` : `Theme: ${mode}`) : "Theme";
 
     return (
         <button type="button" aria-label={label} title={label} onClick={onClick} className={`inline-flex h-8 w-8 items-center justify-center rounded hover:bg-gray-100 ${className}`}>
