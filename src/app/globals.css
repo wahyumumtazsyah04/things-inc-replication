@@ -79,6 +79,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+  font-optical-sizing: auto; /* leverage variable font optical sizing when available */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;

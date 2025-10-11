@@ -142,7 +142,7 @@ export default function Hero({ portalProgressOverride }: HeroProps) {
                 width={360}
                 height={180}
                 className="theme-day-only pointer-events-none hero-cloud-left opacity-70 sm:opacity-80"
-                priority
+                decoding="async"
                 fetchPriority="low"
                 sizes="(max-width: 768px) 60vw, 360px"
             />
@@ -154,7 +154,7 @@ export default function Hero({ portalProgressOverride }: HeroProps) {
                 width={360}
                 height={180}
                 className="theme-night-only pointer-events-none hero-cloud-left opacity-70"
-                priority
+                decoding="async"
                 fetchPriority="low"
                 sizes="(max-width: 768px) 60vw, 360px"
             />
@@ -166,7 +166,7 @@ export default function Hero({ portalProgressOverride }: HeroProps) {
                 width={400}
                 height={200}
                 className="theme-day-only pointer-events-none hero-cloud-right opacity-70 sm:opacity-80"
-                priority
+                decoding="async"
                 fetchPriority="low"
                 sizes="(max-width: 768px) 60vw, 400px"
             />
@@ -178,7 +178,7 @@ export default function Hero({ portalProgressOverride }: HeroProps) {
                 width={400}
                 height={200}
                 className="theme-night-only pointer-events-none hero-cloud-right opacity-70"
-                priority
+                decoding="async"
                 fetchPriority="low"
                 sizes="(max-width: 768px) 60vw, 400px"
             />
@@ -230,7 +230,7 @@ export default function Hero({ portalProgressOverride }: HeroProps) {
                 height={128}
                 className="pointer-events-none hero-tv hidden opacity-90 sm:block"
                 aria-hidden="true"
-                priority={false}
+                decoding="async"
                 sizes="(max-width: 768px) 20vw, 128px"
             />
             <Image
@@ -241,7 +241,7 @@ export default function Hero({ portalProgressOverride }: HeroProps) {
                 height={112}
                 className="pointer-events-none hero-kid hidden sm:block"
                 aria-hidden="true"
-                priority={false}
+                decoding="async"
                 sizes="(max-width: 768px) 20vw, 112px"
             />
             <Image
@@ -252,7 +252,7 @@ export default function Hero({ portalProgressOverride }: HeroProps) {
                 height={86}
                 className="pointer-events-none hero-sling hidden sm:block"
                 aria-hidden="true"
-                priority={false}
+                decoding="async"
                 sizes="(max-width: 768px) 20vw, 86px"
             />
 
@@ -265,7 +265,7 @@ export default function Hero({ portalProgressOverride }: HeroProps) {
                 height={56}
                 className="pointer-events-none hero-q-purple hidden sm:block"
                 aria-hidden="true"
-                priority={false}
+                decoding="async"
                 sizes="(max-width: 768px) 20vw, 56px"
             />
             <Image
@@ -276,7 +276,7 @@ export default function Hero({ portalProgressOverride }: HeroProps) {
                 height={52}
                 className="pointer-events-none hero-q-blue hidden sm:block"
                 aria-hidden="true"
-                priority={false}
+                decoding="async"
                 sizes="(max-width: 768px) 20vw, 52px"
             />
 
