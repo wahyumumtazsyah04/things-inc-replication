@@ -21,6 +21,17 @@ export default function AboutPage() {
                     and a touch of R3F for subtle WebGL depth.
                 </p>
             </Reveal>
+                        <script
+                            type="application/ld+json"
+                            dangerouslySetInnerHTML={{
+                                __html: JSON.stringify({
+                                    "@context": "https://schema.org",
+                                    "@type": "Organization",
+                                    name: "Things, Inc.",
+                                    url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+                                }),
+                            }}
+                        />
         </DecorWrapper>
     );
 }

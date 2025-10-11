@@ -7,9 +7,11 @@ const nextConfig: NextConfig = {
   },
   images: {
     formats: ["image/avif", "image/webp"],
-    // Add remotePatterns here if we ever serve images from a CDN/domain
+    // Add remotePatterns here if we ever serve images from an external domain via next/image
+    // Example:
     // remotePatterns: [
-    //   { protocol: "https", hostname: "cdn.example.com" },
+    //   { protocol: "https", hostname: "images.ctfassets.net" },
+    //   { protocol: "https", hostname: "res.cloudinary.com" },
     // ],
   },
   async redirects() {

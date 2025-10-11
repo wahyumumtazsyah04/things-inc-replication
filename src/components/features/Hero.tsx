@@ -6,10 +6,60 @@ import Image from "next/image";
 import dynamic from "next/dynamic";
 import Magnetic from "@/components/ui/Magnetic";
 import MountOnVisible from "@/components/ui/MountOnVisible";
+import WordReveal from "@/components/ui/WordReveal";
+import CharReveal from "@/components/ui/CharReveal";
+import SkyBackdrop from "@/components/decor/SkyBackdrop";
 
 const PortalScene3D = dynamic(() => import("@/components/decor/PortalScene3D"), { ssr: false });
 
-export default function Hero() {
+type HeroProps = {
+    portalProgressOverride?: number;
+};
+
+export default function Hero({ portalProgressOverride }: HeroProps) {
+    // Scroll-driven progress for the 3D scene (0..1 across hero section)
+    const sectionRef = React.useRef<HTMLElement | null>(null);
+    const [portalProgress, setPortalProgress] = React.useState(0);
+    const latestRef = React.useRef(0);
+    const rafRef = React.useRef<number | null>(null);
+
+    // Bind ScrollTrigger to hero section to drive portalProgress
+    React.useEffect(() => {
+        if (portalProgressOverride != null) return; // external control active
+        if (!sectionRef.current) return;
+        const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduce) return; // respect reduced motion
+        let st: import("gsap/ScrollTrigger").ScrollTrigger | null = null;
+        let killed = false;
+        // Dynamic import to avoid SSR issues and ensure plugin is registered
+        (async () => {
+            const { gsap } = await import("gsap");
+            const { ScrollTrigger } = await import("gsap/ScrollTrigger");
+            gsap.registerPlugin(ScrollTrigger);
+            if (killed) return;
+            st = ScrollTrigger.create({
+                trigger: sectionRef.current!,
+                start: "top top+=64px",
+                end: "bottom top+=64px",
+                scrub: true,
+                onUpdate: (self) => {
+                    // self.progress is already clamped 0..1 within start/end
+                    latestRef.current = self.progress;
+                    if (!rafRef.current) {
+                        rafRef.current = requestAnimationFrame(() => {
+                            setPortalProgress(latestRef.current);
+                            rafRef.current = null;
+                        });
+                    }
+                },
+            });
+        })();
+        return () => {
+            killed = true;
+            if (st) st.kill();
+            if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        };
+    }, [portalProgressOverride]);
     const h1Ref = useFadeInUp<HTMLHeadingElement>(0);
     const pRef = useFadeInUp<HTMLParagraphElement>(0.05);
     const cta1Ref = useFadeInUp<HTMLAnchorElement>(0.1);
@@ -65,10 +115,12 @@ export default function Hero() {
     }, [cloudLeftDay, cloudLeftNight, cloudRightDay, cloudRightNight, h1Ref, pRef, cta1Ref, cta2Ref, tvRef, kidRef, slingRef, qPurpleRef, qBlueRef]);
 
     return (
-        <section className="section relative mx-auto max-w-6xl px-4 pt-16 sm:pt-20 md:pt-24 pb-14 sm:pb-16 md:pb-20">
+    <section ref={sectionRef} className="section relative mx-auto max-w-6xl px-4 pt-16 sm:pt-20 md:pt-24 pb-16 sm:pb-20 md:pb-24 overflow-visible">
+            {/* Theme-aware sky backdrop and subtle starfield */}
+            <SkyBackdrop />
             {/* Lightweight 3D canvas (gated by prefers-reduced-motion) and only mounted when visible */}
             <MountOnVisible rootMargin="0px 0px -10% 0px">
-                <PortalScene3D />
+                <PortalScene3D progress={portalProgressOverride ?? portalProgress} />
             </MountOnVisible>
             {/* Background mosaic (subtle) */}
             <div className="pointer-events-none absolute inset-0 -z-10 opacity-[0.06]">
@@ -91,6 +143,7 @@ export default function Hero() {
                 height={180}
                 className="theme-day-only pointer-events-none hero-cloud-left opacity-70 sm:opacity-80"
                 priority
+                fetchPriority="low"
                 sizes="(max-width: 768px) 60vw, 360px"
             />
             <Image
@@ -102,6 +155,7 @@ export default function Hero() {
                 height={180}
                 className="theme-night-only pointer-events-none hero-cloud-left opacity-70"
                 priority
+                fetchPriority="low"
                 sizes="(max-width: 768px) 60vw, 360px"
             />
             <Image
@@ -113,6 +167,7 @@ export default function Hero() {
                 height={200}
                 className="theme-day-only pointer-events-none hero-cloud-right opacity-70 sm:opacity-80"
                 priority
+                fetchPriority="low"
                 sizes="(max-width: 768px) 60vw, 400px"
             />
             <Image
@@ -124,24 +179,29 @@ export default function Hero() {
                 height={200}
                 className="theme-night-only pointer-events-none hero-cloud-right opacity-70"
                 priority
+                fetchPriority="low"
                 sizes="(max-width: 768px) 60vw, 400px"
             />
 
-            <div ref={fgScaleRef} className="relative max-w-2xl">
-                <h1 ref={h1Ref} className="font-[family:var(--font-sans)]">
-                    Build modern marketing sites with confidence
-                </h1>
-                <p ref={pRef} className="mt-4 text-[color:var(--muted)] font-[family:var(--font-sans)]">
+            <div ref={fgScaleRef} className="relative max-w-2xl md:mx-auto md:text-center">
+                <div ref={h1Ref}>
+                    <CharReveal as="h1" className="[text-wrap:balance] tracking-tight" stagger={0.02} wordGap={0.06}>
+                        Build modern marketing sites with confidence
+                    </CharReveal>
+                </div>
+                <p ref={pRef} className="mt-4 text-[color:var(--muted)] font-[family:var(--font-sans)] md:max-w-2xl md:mx-auto">
                     A clean Next.js foundation with Tailwind, wired for Things, Inc.-style animations, content, and growth.
                 </p>
-                <div className="mt-7 sm:mt-8 flex flex-wrap gap-2.5 sm:gap-3">
+                <div className="mt-7 sm:mt-8 flex flex-wrap gap-2.5 sm:gap-3 md:justify-center">
                     <Magnetic>
                         <Link
                             ref={cta1Ref}
                             href="/products"
                             className="inline-flex items-center justify-center rounded px-5 py-2.5 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 bg-[color:var(--zenotika-accent)] text-[color:var(--zenotika-accent-contrast)] hover:bg-[color:var(--zenotika-accent-hover)] focus-visible:ring-[color:var(--zenotika-ring)]"
                         >
-                            Explore products
+                            <WordReveal as="span" stagger={0.02}>
+                                Explore products
+                            </WordReveal>
                         </Link>
                     </Magnetic>
                     <Magnetic>
@@ -154,6 +214,11 @@ export default function Hero() {
                         </Link>
                     </Magnetic>
                 </div>
+                <p className="mt-3 text-xs text-[color:var(--muted)] md:text-center">
+                    <Link href="/story" className="underline-anim link-reset text-[color:var(--foreground)]/70 hover:text-[color:var(--foreground)]">
+                        See scrollytelling demo
+                    </Link>
+                </p>
             </div>
 
             {/* Hero decorative elements for stronger 1:1 parity */}
@@ -216,7 +281,7 @@ export default function Hero() {
             />
 
             {/* Scroll cue */}
-            <div className="pointer-events-none absolute inset-x-0 -bottom-1 sm:-bottom-2 flex justify-center">
+            <div className="pointer-events-none absolute inset-x-0 -bottom-2 sm:-bottom-3 flex justify-center">
                 <div className="flex items-center gap-2 text-xs text-[color:var(--foreground)]/60">
                     <span className="hidden sm:inline">Scroll</span>
                     <svg className="h-4 w-4 animate-bounce" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

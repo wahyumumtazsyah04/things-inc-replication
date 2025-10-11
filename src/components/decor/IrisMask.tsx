@@ -17,10 +17,10 @@ export default function IrisMask({ show }: { show: boolean }) {
         <motion.div
           aria-hidden
           className="pointer-events-none fixed inset-0 z-[75]"
-          initial={{ clipPath: "circle(140% at 50% 50%)", opacity: 1 }}
-          animate={{ clipPath: "circle(0% at 50% 50%)", opacity: 0 }}
-          exit={{ clipPath: "circle(140% at 50% 50%)", opacity: 1 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          initial={{ clipPath: "circle(140% at 50% 50%)", opacity: 0.95 }}
+          animate={{ clipPath: "circle(12% at 50% 50%)", opacity: 0 }}
+          exit={{ clipPath: "circle(140% at 50% 50%)", opacity: 0.95 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           style={{ background: "var(--background)" }}
         />)
       }

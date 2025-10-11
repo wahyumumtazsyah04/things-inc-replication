@@ -39,6 +39,17 @@ export function useOrchestrator(scenes: SceneConfig[], opts: OrchestratorOptions
         [scenes]
     );
 
+    // derive a stable key for extra snap points to satisfy exhaustive-deps without causing churn
+    const extraSnapKey = useMemo(() => {
+        const arr = (opts.extraSnapPoints || []).slice().filter((p) => p >= 0 && p <= 1).sort((a,b)=>a-b);
+        return JSON.stringify(arr);
+    }, [opts.extraSnapPoints]);
+
+    // Stable, filtered extra snap points array value derived from key
+    const extraSnapPoints = useMemo<number[]>(() => {
+        try { return JSON.parse(extraSnapKey) as number[]; } catch { return []; }
+    }, [extraSnapKey]);
+
     useEffect(() => {
         // Reduced motion guard
         const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -70,7 +81,7 @@ export function useOrchestrator(scenes: SceneConfig[], opts: OrchestratorOptions
         timelinesRef.current = timelines;
 
         // Build root scroll trigger to drive progress across 0..1
-        const extra = (opts.extraSnapPoints || []).filter((p) => p >= 0 && p <= 1);
+    const extra = extraSnapPoints;
         const snapPoints = enableSnap ? Array.from(new Set([
             0,
             ...scenes.map((s) => s.start),
@@ -122,5 +133,5 @@ export function useOrchestrator(scenes: SceneConfig[], opts: OrchestratorOptions
             pins.forEach((p) => p.kill());
             timelines.forEach((tl) => tl.kill());
         };
-    }, [scenesKey, enableSnap, topOffsetPx, onProgress, onEnter, onExit, opts.extraSnapPoints]);
+    }, [scenesKey, scenes, enableSnap, topOffsetPx, onProgress, onEnter, onExit, extraSnapKey, extraSnapPoints]);
 }

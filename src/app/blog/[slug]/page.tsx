@@ -25,10 +25,12 @@ export async function generateMetadata({ params }: Params) {
   return {
     title,
     description,
+    alternates: { canonical: `/blog/${params.slug}` },
     openGraph: {
       title,
       description,
       type: "article",
+      url: `/blog/${params.slug}`,
       images: ogImages,
     },
     twitter: {
@@ -49,6 +51,8 @@ export default function BlogPostPage({ params }: Params) {
     headline: post.title,
     description: post.summary,
     datePublished: post.date,
+    url: `/blog/${params.slug}`,
+    author: post.author ? { "@type": "Person", name: post.author } : undefined,
   };
   // Cast to satisfy next-mdx-remote SerializeOptions typing in RSC mode
   const serializeOptions = ({
@@ -75,6 +79,15 @@ export default function BlogPostPage({ params }: Params) {
       <Reveal selector="> *" stagger={0.06} className="mx-auto max-w-3xl">
         <article className="prose prose-zinc">
         <Script id="post-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+        <Script id="breadcrumbs-blog-post" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "/" },
+            { "@type": "ListItem", position: 2, name: "Blog", item: "/blog" },
+            { "@type": "ListItem", position: 3, name: post.title, item: `/blog/${params.slug}` },
+          ],
+        }) }} />
         <h1>{post.title}</h1>
         <MDXRemote
           source={post.content}

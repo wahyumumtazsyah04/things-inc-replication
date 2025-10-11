@@ -8,10 +8,12 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Blog",
   description: "Articles and updates from Things, Inc.",
+  alternates: { canonical: "/blog" },
   openGraph: {
     title: "Blog",
     description: "Articles and updates from Things, Inc.",
     type: "website",
+    url: "/blog",
   },
   twitter: {
     card: "summary_large_image",
@@ -24,6 +26,20 @@ export default function BlogIndexPage() {
   const posts = listMDXPosts();
   return (
     <DecorWrapper>
+      <script
+        id="jsonld-breadcrumbs-blog"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: "/" },
+              { "@type": "ListItem", position: 2, name: "Blog", item: "/blog" },
+            ],
+          }),
+        }}
+      />
       <SectionHeader title="Blog" subtitle="Articles and updates from Things, Inc." />
       <Reveal className="mt-4" selector="> li" stagger={0.08}>
         <ul className="mt-4 space-y-6">

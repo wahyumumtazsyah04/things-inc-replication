@@ -6,19 +6,33 @@ export const metadata: Metadata = {
         title: "Portal",
         description: "Step into the next space—playful transitions between scenes.",
         type: "website",
+        url: "/rooms/portal",
     },
     twitter: {
         card: "summary_large_image",
         title: "Portal",
         description: "Step into the next space—playful transitions between scenes.",
     },
+    alternates: { canonical: "/rooms/portal" },
 };
 import Image from "next/image";
 import PortalHero from "./PortalHero";
+import Script from "next/script";
 
 export default function PortalPage() {
     return (
         <>
+            <Script id="jsonld-breadcrumbs-rooms-portal" type="application/ld+json">
+                {JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "BreadcrumbList",
+                    itemListElement: [
+                        { "@type": "ListItem", position: 1, name: "Home", item: "/" },
+                        { "@type": "ListItem", position: 2, name: "Rooms", item: "/rooms" },
+                        { "@type": "ListItem", position: 3, name: "Portal", item: "/rooms/portal" },
+                    ],
+                })}
+            </Script>
             <PortalHero />
             <section className="mx-auto max-w-6xl px-4 pb-16">
                 <div className="grid md:grid-cols-2 gap-6 items-center">

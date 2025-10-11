@@ -2,6 +2,7 @@
 
 :root {
   --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Plus Jakarta Sans", "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
   /* Base surfaces */
   --background: #ffffff;
   --foreground: #171717;
@@ -83,6 +84,8 @@ body {
   text-rendering: optimizeLegibility;
   font-feature-settings: "liga" 1, "kern" 1, "calt" 1, "ss01" 0;
   font-variation-settings: "opsz" 14;
+  font-synthesis-weight: none;
+  font-synthesis-style: none;
 }
 
 /* Root font-size mapping inspired by Webflow export for closer 1:1 scaling */
@@ -120,9 +123,9 @@ body::before {
 [data-theme="night"] .logo-night { display: inline; }
 
 /* Global type scale */
-h1 { font-family: var(--font-sans); font-weight: 700; font-size: var(--fs-h1); line-height: var(--lh-h1); letter-spacing: -0.018em; }
-h2 { font-family: var(--font-sans); font-weight: 700; font-size: var(--fs-h2); line-height: var(--lh-h2); letter-spacing: -0.014em; }
-h3 { font-family: var(--font-sans); font-weight: 600; font-size: var(--fs-h3); line-height: var(--lh-h3); letter-spacing: -0.006em; }
+h1 { font-family: var(--font-display), var(--font-sans); font-weight: 700; font-size: var(--fs-h1); line-height: var(--lh-h1); letter-spacing: -0.018em; text-wrap: balance; }
+h2 { font-family: var(--font-display), var(--font-sans); font-weight: 700; font-size: var(--fs-h2); line-height: var(--lh-h2); letter-spacing: -0.014em; text-wrap: balance; }
+h3 { font-family: var(--font-display), var(--font-sans); font-weight: 600; font-size: var(--fs-h3); line-height: var(--lh-h3); letter-spacing: -0.006em; }
 p  { font-family: var(--font-sans); font-size: var(--fs-p); line-height: 1.72; letter-spacing: 0; hyphens: auto; }
 
 /* Fine-grained heading tweaks per breakpoint for 1:1 feel */
@@ -292,6 +295,13 @@ pre [data-highlighted-line] {
   mask-repeat: no-repeat;
   mask-size: cover;
   background: radial-gradient(ellipse at center, rgba(0,0,0,0.5), transparent 60%);
+}
+
+/* Lightweight scene transition mask (used in scene 2) */
+.scene-mask {
+  background: radial-gradient(120% 80% at 50% 10%, rgba(0,0,0,0.12), transparent 60%),
+              linear-gradient(to bottom, rgba(0,0,0,0.06), transparent 45%);
+  opacity: 0; /* animated in GSAP timeline */
 }
 
 /* Overlay sweep element */
@@ -536,7 +546,183 @@ pre [data-highlighted-line] {
   /* Tighten tracking/leading to match reference rhythm */
   h1 { letter-spacing: -0.023em; line-height: 1.10; }
   h2 { letter-spacing: -0.0175em; line-height: 1.14; }
+  h3 { letter-spacing: -0.0085em; line-height: 1.22; }
   p  { line-height: 1.74; }
+}
+
+/* Widespread laptop resolution: 1366×768 */
+@media (width: 1366px) and (height: 768px) {
+  :root {
+    --hero-cloud-left-left: -7.25rem;
+    --hero-cloud-left-top: 2.1rem;
+    --hero-cloud-right-right: -8.25rem;
+    --hero-cloud-right-top: 7.1rem;
+    --hero-tv-right: 3.4rem;
+    --hero-tv-top: 2.2rem;
+    --hero-kid-left: 0.1rem;
+    --hero-kid-bottom: 2.9rem;
+    --hero-sling-right: 6.2rem;
+    --hero-sling-bottom: 2.3rem;
+    --hero-q-purple-right: 14.2rem;
+    --hero-q-purple-top: 6.3rem;
+    --hero-q-blue-left: 7.3rem;
+    --hero-q-blue-bottom: 4.3rem;
+
+    /* Slightly smaller type than 1440×900 */
+    --fs-h1: 50px;
+    --fs-h2: 36px;
+    --fs-h3: 24px;
+    --fs-p: 16.5px;
+  }
+  h1 { letter-spacing: -0.0215em; line-height: 1.12; }
+  h2 { letter-spacing: -0.0165em; line-height: 1.16; }
+  h3 { letter-spacing: -0.0075em; line-height: 1.23; }
+  p  { line-height: 1.73; }
+}
+
+/* MacBook 13"-ish: 1280×800 */
+@media (width: 1280px) and (height: 800px) {
+  :root {
+    --hero-cloud-left-left: -7rem;
+    --hero-cloud-left-top: 2.2rem;
+    --hero-cloud-right-right: -8rem;
+    --hero-cloud-right-top: 7.3rem;
+    --hero-tv-right: 3.3rem;
+    --hero-tv-top: 2.3rem;
+    --hero-kid-left: 0rem;
+    --hero-kid-bottom: 3rem;
+    --hero-sling-right: 6.3rem;
+    --hero-sling-bottom: 2.4rem;
+    --hero-q-purple-right: 14.1rem;
+    --hero-q-purple-top: 6.5rem;
+    --hero-q-blue-left: 7.2rem;
+    --hero-q-blue-bottom: 4.4rem;
+
+    --fs-h1: 48px;
+    --fs-h2: 34px;
+    --fs-h3: 24px;
+    --fs-p: 16.5px;
+  }
+  h1 { letter-spacing: -0.021em; line-height: 1.13; }
+  h2 { letter-spacing: -0.016em; line-height: 1.17; }
+  h3 { letter-spacing: -0.007em; line-height: 1.24; }
+  p  { line-height: 1.72; }
+}
+
+/* 1536×864 (common 16:9 laptop) */
+@media (width: 1536px) and (height: 864px) {
+  :root {
+    --hero-cloud-left-left: -9rem;
+    --hero-cloud-left-top: 2.2rem;
+    --hero-cloud-right-right: -9.2rem;
+    --hero-cloud-right-top: 8rem;
+    --hero-tv-right: 4.4rem;
+    --hero-tv-top: 2.3rem;
+    --hero-kid-left: 0.3rem;
+    --hero-kid-bottom: 3.15rem;
+    --hero-sling-right: 7rem;
+    --hero-sling-bottom: 2.4rem;
+    --hero-q-purple-right: 15.4rem;
+    --hero-q-purple-top: 7rem;
+    --hero-q-blue-left: 8.4rem;
+    --hero-q-blue-bottom: 4.95rem;
+
+    --fs-h1: 54px;
+    --fs-h2: 39px;
+    --fs-h3: 27px;
+    --fs-p: 17.5px;
+  }
+  h1 { letter-spacing: -0.0225em; line-height: 1.11; }
+  h2 { letter-spacing: -0.017em; line-height: 1.15; }
+  h3 { letter-spacing: -0.008em; line-height: 1.22; }
+  p  { line-height: 1.74; }
+}
+
+/* 1600×900 (16:9 wide) */
+@media (width: 1600px) and (height: 900px) {
+  :root {
+    --hero-cloud-left-left: -9.4rem;
+    --hero-cloud-left-top: 2.2rem;
+    --hero-cloud-right-right: -9.5rem;
+    --hero-cloud-right-top: 8.2rem;
+    --hero-tv-right: 4.6rem;
+    --hero-tv-top: 2.35rem;
+    --hero-kid-left: 0.35rem;
+    --hero-kid-bottom: 3.2rem;
+    --hero-sling-right: 7.15rem;
+    --hero-sling-bottom: 2.45rem;
+    --hero-q-purple-right: 15.7rem;
+    --hero-q-purple-top: 7.1rem;
+    --hero-q-blue-left: 8.55rem;
+    --hero-q-blue-bottom: 5rem;
+
+    --fs-h1: 56px;
+    --fs-h2: 40px;
+    --fs-h3: 28px;
+    --fs-p: 18px;
+  }
+  h1 { letter-spacing: -0.023em; line-height: 1.10; }
+  h2 { letter-spacing: -0.0175em; line-height: 1.14; }
+  h3 { letter-spacing: -0.0085em; line-height: 1.21; }
+  p  { line-height: 1.74; }
+}
+
+/* 1920×1080 (Full HD) */
+@media (width: 1920px) and (height: 1080px) {
+  :root {
+    --hero-cloud-left-left: -10.5rem;
+    --hero-cloud-left-top: 2.4rem;
+    --hero-cloud-right-right: -10.8rem;
+    --hero-cloud-right-top: 9rem;
+    --hero-tv-right: 5.2rem;
+    --hero-tv-top: 2.5rem;
+    --hero-kid-left: 0.75rem;
+    --hero-kid-bottom: 3.45rem;
+    --hero-sling-right: 8rem;
+    --hero-sling-bottom: 2.6rem;
+    --hero-q-purple-right: 17rem;
+    --hero-q-purple-top: 7.9rem;
+    --hero-q-blue-left: 9.2rem;
+    --hero-q-blue-bottom: 5.4rem;
+
+    --fs-h1: 58px;
+    --fs-h2: 42px;
+    --fs-h3: 29px;
+    --fs-p: 18.5px;
+  }
+  h1 { letter-spacing: -0.024em; line-height: 1.08; }
+  h2 { letter-spacing: -0.0185em; line-height: 1.13; }
+  h3 { letter-spacing: -0.009em; line-height: 1.20; }
+  p  { line-height: 1.73; }
+}
+
+/* 2560×1440 (QHD) */
+@media (width: 2560px) and (height: 1440px) {
+  :root {
+    --hero-cloud-left-left: -12.5rem;
+    --hero-cloud-left-top: 2.6rem;
+    --hero-cloud-right-right: -12.8rem;
+    --hero-cloud-right-top: 10.2rem;
+    --hero-tv-right: 6.2rem;
+    --hero-tv-top: 2.7rem;
+    --hero-kid-left: 1.25rem;
+    --hero-kid-bottom: 3.7rem;
+    --hero-sling-right: 9.2rem;
+    --hero-sling-bottom: 2.8rem;
+    --hero-q-purple-right: 19rem;
+    --hero-q-purple-top: 9rem;
+    --hero-q-blue-left: 10.5rem;
+    --hero-q-blue-bottom: 6.1rem;
+
+    --fs-h1: 60px;
+    --fs-h2: 44px;
+    --fs-h3: 30px;
+    --fs-p: 19px;
+  }
+  h1 { letter-spacing: -0.0245em; line-height: 1.07; }
+  h2 { letter-spacing: -0.019em; line-height: 1.12; }
+  h3 { letter-spacing: -0.0095em; line-height: 1.19; }
+  p  { line-height: 1.72; }
 }
 
 /* Laptop range ~1280–1366 width */
@@ -582,3 +768,30 @@ pre [data-highlighted-line] {
   h1 { letter-spacing: -0.023em; line-height: 1.1; }
   h2 { letter-spacing: -0.0175em; line-height: 1.14; }
 }
+
+/* Sky backdrop utilities: theme-aware gradient + subtle starfield */
+.sky-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, color-mix(in oklab, #2a3a8f 80%, var(--background)) 0%, var(--background) 75%);
+  transition: background 300ms ease;
+}
+[data-theme="day"] .sky-gradient {
+  background: linear-gradient(180deg, #a9c7ff 0%, #f3f7ff 55%, #ffffff 85%);
+}
+[data-theme="night"] .sky-gradient {
+  background: radial-gradient(120% 120% at 50% 0%, #0f1440 0%, #0a0e2e 45%, #0a0a16 100%);
+}
+.starfield {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 20% 15%, rgba(255,255,255,0.6), rgba(255,255,255,0) 50%),
+    radial-gradient(1px 1px at 60% 25%, rgba(255,255,255,0.5), rgba(255,255,255,0) 50%),
+    radial-gradient(1px 1px at 80% 40%, rgba(255,255,255,0.45), rgba(255,255,255,0) 50%),
+    radial-gradient(1px 1px at 35% 60%, rgba(255,255,255,0.5), rgba(255,255,255,0) 50%),
+    radial-gradient(1px 1px at 75% 75%, rgba(255,255,255,0.55), rgba(255,255,255,0) 50%);
+  opacity: 0.14;
+  mix-blend-mode: screen;
+}
+[data-theme="day"] .starfield { opacity: 0.04; }

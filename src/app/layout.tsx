@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { cookies, headers } from "next/headers";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -18,6 +18,13 @@ const fontSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-sans",
+  weight: ["400", "500", "600", "700"],
+});
+
+const fontDisplay = Space_Grotesk({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-display",
   weight: ["400", "500", "600", "700"],
 });
 
@@ -80,7 +87,7 @@ export default async function RootLayout({
   }
   return (
     <html lang="en" data-theme={initialTheme} suppressHydrationWarning>
-      <body className={`${fontSans.variable} antialiased`}>
+      <body className={`${fontSans.variable} ${fontDisplay.variable} antialiased`}>
         <a href="#main" className="skip-link">Skip to content</a>
         <Script id="theme-init" strategy="beforeInteractive">
           {`

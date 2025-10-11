@@ -5,6 +5,8 @@ import SectionHeader from "@/components/ui/SectionHeader";
 export const metadata = {
   title: "Products",
   description: "Explore our product lineup designed for modern teams.",
+  openGraph: { title: "Products", description: "Explore our product lineup designed for modern teams.", type: "website" },
+  twitter: { card: "summary", title: "Products" },
 };
 
 export default function ProductsPage() {

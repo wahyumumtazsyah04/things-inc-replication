@@ -1,9 +1,21 @@
-export const metadata = { title: "Displays" };
+export const metadata = { title: "Displays", alternates: { canonical: "/rooms/displays" }, openGraph: { url: "/rooms/displays" } };
 import RoomSubHero from "@/components/features/rooms/RoomSubHero";
 import Reveal from "@/components/ui/Reveal";
+import Script from "next/script";
 export default function DisplaysPage() {
     return (
         <>
+            <Script id="jsonld-breadcrumbs-rooms-displays" type="application/ld+json">
+                {JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "BreadcrumbList",
+                    itemListElement: [
+                        { "@type": "ListItem", position: 1, name: "Home", item: "/" },
+                        { "@type": "ListItem", position: 2, name: "Rooms", item: "/rooms" },
+                        { "@type": "ListItem", position: 3, name: "Displays", item: "/rooms/displays" },
+                    ],
+                })}
+            </Script>
             <RoomSubHero
                 title="Displays"
                 subtitle="Screens, scenes, and playful motion that bring rooms to life."

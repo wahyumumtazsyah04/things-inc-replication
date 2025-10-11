@@ -3,6 +3,8 @@ import React, { useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import AmbientClouds from "@/components/decor/AmbientClouds";
+import Reveal from "@/components/ui/Reveal";
+import WordReveal from "@/components/ui/WordReveal";
 import { usePrefersReducedMotion } from "@/lib/reduced-motion";
 import { useCollectibles } from "@/components/providers/CollectiblesProvider";
 import type { CollectibleKey } from "@/components/providers/CollectiblesProvider";
@@ -24,10 +26,12 @@ function Section({ id, title, children }: { id: string; title: string; children?
                 <div className="relative h-full w-full">
                     <AmbientClouds />
                     <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="max-w-2xl px-4 text-center">
-                            <h2 className="mb-3 text-3xl font-semibold sm:text-4xl">{title}</h2>
+                        <Reveal className="max-w-2xl px-4 text-center" selector="> *">
+                            <WordReveal as="h2" className="mb-3 text-3xl font-semibold sm:text-4xl tracking-tight [text-wrap:balance]" stagger={0.055}>
+                                {title}
+                            </WordReveal>
                             {children}
-                        </div>
+                        </Reveal>
                     </div>
                 </div>
             </div>
@@ -45,8 +49,10 @@ export default function StoryPage() {
     const s3 = useRef<HTMLDivElement>(null);
 
     // Orchestrator: 3 scenes stitched via global progress 0..1
-    // Track portal progress (scene 2 as example)
-    const portalProgressRef = useRef(0);
+    // Track portal progress (scene 2 as example) and re-render when it changes
+    const [portalProgress, setPortalProgress] = React.useState(0);
+    const latestPortalProgress = React.useRef(0);
+    const rafSetProgress = React.useRef<number | null>(null);
 
     useOrchestrator(
         [
@@ -82,7 +88,16 @@ export default function StoryPage() {
         {
             onProgress: (id, p) => {
                 telemetry.progress(id, p);
-                if (id === "room2") portalProgressRef.current = p;
+                if (id === "room2") {
+                    latestPortalProgress.current = p;
+                    // Throttle React updates to animation frame to avoid excessive re-renders
+                    if (!rafSetProgress.current) {
+                        rafSetProgress.current = requestAnimationFrame(() => {
+                            setPortalProgress(latestPortalProgress.current);
+                            rafSetProgress.current = null;
+                        });
+                    }
+                }
             },
             onEnter: telemetry.enter,
             onExit: telemetry.exit,
@@ -91,6 +106,13 @@ export default function StoryPage() {
             topOffsetPx: 64,
         }
     );
+
+    // Cleanup any pending RAF when unmounting
+    React.useEffect(() => {
+        return () => {
+            if (rafSetProgress.current) cancelAnimationFrame(rafSetProgress.current);
+        };
+    }, []);
 
     // Collectibles interactions (tap/click)
     const pick = (id: CollectibleKey) => () => {
@@ -103,13 +125,13 @@ export default function StoryPage() {
     };
 
     // IrisMask sync: tampil saat transisi antar scene (contoh: menjelang masuk scene 2)
-    const irisShow = !reduce && portalProgressRef.current > 0.05 && portalProgressRef.current < 0.95;
+    const irisShow = !reduce && portalProgress > 0.05 && portalProgress < 0.95;
     const auditSrc = process.env.NEXT_PUBLIC_PIXEL_AUDIT_SRC;
 
     return (
         <div className="relative">
             {/* Portal reveal synced to second scene progress */}
-            {!reduce && <PortalScene3D progress={portalProgressRef.current} />}
+            {!reduce && <PortalScene3D progress={portalProgress} />}
             <IrisMask show={irisShow} />
             <div className="sticky top-16 z-10 flex items-center justify-center gap-3 bg-[color:var(--header-bg)] px-3 py-2 text-xs backdrop-blur supports-[backdrop-filter]:bg-[color:var(--header-bg-blur)] sm:top-[72px]">
                 <span className="text-[color:var(--foreground)]/70">Demo scrollytelling: pinned sections + ambient clouds</span>

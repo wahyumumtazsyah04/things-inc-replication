@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useFadeInUp, useParallax, useParallaxScale } from "@/lib/animations";
 import Magnetic from "@/components/ui/Magnetic";
+import WordReveal from "@/components/ui/WordReveal";
 
 export default function RoomsHero() {
   const h1Ref = useFadeInUp<HTMLHeadingElement>(0);
@@ -36,7 +37,9 @@ export default function RoomsHero() {
       <Image ref={cloudRightNight} src="/thingsinc/66f367536d9cdf539095c9eb_footer-cloud-right_night.png" alt="" aria-hidden width={380} height={200} className="theme-night-only pointer-events-none hero-cloud-right opacity-70" />
 
       <div ref={fgScaleRef} className="relative max-w-2xl">
-        <h1 ref={h1Ref}>Rooms</h1>
+        <div ref={h1Ref}>
+          <WordReveal as="h1" stagger={0.05} className="tracking-tight">Rooms</WordReveal>
+        </div>
         <p ref={pRef} className="mt-3 text-[color:var(--muted)]">A playful collection of interactive spaces inspired by Things, Inc.—from displays and furniture to mirrors and portals.</p>
         <div className="mt-6">
               <Magnetic>

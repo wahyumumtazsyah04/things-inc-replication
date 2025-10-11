@@ -65,7 +65,9 @@ export default function Header() {
             width={132}
             height={36}
             className="logo-day h-7 w-auto"
-            priority
+            priority={true}
+            fetchPriority="high"
+            decoding="async"
           />
           <Image
             src={isInner ? "/thingsinc/672bea61ffcc89b629e760fe_inner-logo_night.png" : "/thingsinc/6705b9208ebb9e666ec8413b_Home-logo_night.png"}
@@ -73,7 +75,8 @@ export default function Header() {
             width={132}
             height={36}
             className="logo-night h-7 w-auto"
-            priority
+            priority={false}
+            decoding="async"
           />
         </Link>
 

@@ -2,6 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import { useFadeInUp, useParallax } from "@/lib/animations";
+import WordReveal from "@/components/ui/WordReveal";
 
 type Props = {
   title: string;
@@ -33,7 +34,9 @@ export default function RoomSubHero({ title, subtitle, dayImageSrc, nightImageSr
       <Image ref={cloudRightNight} src="/thingsinc/66f367536d9cdf539095c9eb_footer-cloud-right_night.png" alt="" aria-hidden width={360} height={180} className="theme-night-only pointer-events-none hero-cloud-right opacity-70" />
 
       <div className="relative max-w-2xl">
-        <h1 ref={h1Ref}>{title}</h1>
+        <div ref={h1Ref}>
+          <WordReveal as="h1" stagger={0.05} className="tracking-tight [text-wrap:balance]">{title}</WordReveal>
+        </div>
         {subtitle && <p ref={pRef} className="mt-3 text-[color:var(--muted)]">{subtitle}</p>}
       </div>
 
