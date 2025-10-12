@@ -5,19 +5,14 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Script from "next/script";
-import dynamic from "next/dynamic";
 import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider";
 import PageTransitionProvider from "@/components/providers/PageTransitionProvider";
-const CustomCursor = dynamic(() => import("@/components/ui/CustomCursor"), { ssr: false });
-const RouteChangeEffects = dynamic(() => import("@/components/providers/RouteChangeEffects"), { ssr: false });
-const AnalyticsEvents = dynamic(() => import("@/components/providers/AnalyticsEvents"), { ssr: false });
-const WebVitalsReporter = dynamic(() => import("@/components/providers/WebVitalsReporter"), { ssr: false });
+import ClientSideInjections from "@/components/providers/ClientSideInjections";
 import DiagnosticsToggle from "@/components/providers/DiagnosticsToggle";
 import { CollectiblesProvider } from "@/components/providers/CollectiblesProvider";
 import { AmbienceProvider } from "@/components/providers/AmbienceProvider";
 import CollectiblesHUD from "@/components/ui/CollectiblesHUD";
 import ConsentBanner from "@/components/providers/ConsentBanner";
-const ConsentAnalytics = dynamic(() => import("@/components/providers/ConsentAnalytics"), { ssr: false });
 
 // fonts are centralized in src/lib/fonts (swap to local by replacing that module)
 
@@ -96,8 +91,8 @@ export default async function RootLayout({
             } catch (e) {}
           `}
         </Script>
-        {/* Consent-gated analytics boot */}
-        <ConsentAnalytics />
+        {/* Client-only utilities and analytics */}
+        <ClientSideInjections />
         {/* Basic JSON-LD for Organization */}
         <Script id="jsonld-org" type="application/ld+json" strategy="afterInteractive">
           {JSON.stringify({
@@ -147,14 +142,7 @@ export default async function RootLayout({
         </AmbienceProvider>
         {/* Consent banner (appears until accepted/declined) */}
         <ConsentBanner />
-        {/* Handle scroll + ScrollTrigger refresh on navigation */}
-        <RouteChangeEffects />
-        {/* Custom cursor for desktop pointers (hidden on touch automatically) */}
-        <CustomCursor />
-        {/* Analytics event wiring (pageviews + scroll depth) */}
-        <AnalyticsEvents />
-        {/* Web Vitals (LCP/CLS/FID) reporter to GA/dataLayer; logs in dev */}
-        <WebVitalsReporter />
+        {/* (moved to client only) */}
         {/* Dev diagnostics toggle: Alt+D to outline LCP and Canvas regions */}
         {process.env.NODE_ENV !== "production" && <DiagnosticsToggle />}
       </body>
