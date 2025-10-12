@@ -15,12 +15,16 @@ declare global {
  * - No-ops when NEXT_PUBLIC_GA_ID is not set
  */
 export default function AnalyticsEvents() {
-  const enabled = Boolean(process.env.NEXT_PUBLIC_GA_ID);
+  const isProd = process.env.NODE_ENV === "production";
+  const enabled = isProd && Boolean(process.env.NEXT_PUBLIC_GA_ID);
 
   React.useEffect(() => {
     if (!enabled || typeof window === "undefined") return;
 
     const gtagSafe = (event: string, params: Record<string, unknown> = {}) => {
+      // Optional consent gate: only emit when window.__consentGranted is true or undefined
+      const consentOk = (window as any).__consentGranted !== false;
+      if (!consentOk) return;
       try {
         if (typeof window.gtag === "function") {
           window.gtag("event", event, params);

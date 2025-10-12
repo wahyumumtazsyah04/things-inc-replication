@@ -5,7 +5,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useOrchestrator, type SceneConfig } from "@/lib/orchestrator";
 import Hero from "@/components/features/Hero";
 import ProductShowcase from "@/components/features/ProductShowcase";
+import LogBook from "@/components/features/LogBook";
 import PricingTable from "@/components/features/PricingTable";
+import NewsletterSignup from "@/components/ui/NewsletterSignup";
 import DecorWrapper from "@/components/decor/DecorWrapper";
 import dynamic from "next/dynamic";
 import { usePrefersReducedMotion } from "@/lib/reduced-motion";
@@ -16,6 +18,7 @@ gsap.registerPlugin(ScrollTrigger);
 export default function HomeOrchestrated() {
   const sHero = React.useRef<HTMLDivElement>(null);
   const sProducts = React.useRef<HTMLDivElement>(null);
+  const sLogbook = React.useRef<HTMLDivElement>(null);
   const sPricing = React.useRef<HTMLDivElement>(null);
 
   const reduce = usePrefersReducedMotion();
@@ -33,7 +36,7 @@ export default function HomeOrchestrated() {
         id: "hero",
         el: sHero.current,
         start: 0,
-        end: 1 / 3,
+        end: 1 / 4,
         pin: true,
         create: (root) => gsap.timeline({ defaults: { ease: "power3.out" } })
           .fromTo(root.querySelector("h1"), { autoAlpha: 0, y: 26, filter: "blur(1px)" }, { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.9 })
@@ -42,27 +45,39 @@ export default function HomeOrchestrated() {
       {
         id: "products",
         el: sProducts.current,
-        start: 1 / 3,
-        end: 2 / 3,
+        start: 1 / 4,
+        end: 2 / 4,
         pin: true,
         create: (root) => {
           const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
           const mask = root.querySelector(".scene-mask") as HTMLElement | null;
-          if (mask) {
-            tl.fromTo(mask, { autoAlpha: 0 }, { autoAlpha: 0.25, duration: 0.28, ease: "power1.out" });
-          }
-          tl.fromTo(root.querySelector(".section"), { autoAlpha: 0, y: 30, rotate: -1.2 }, { autoAlpha: 1, y: 0, rotate: 0, duration: 0.85 });
-          tl.to(root.querySelector(".section"), { y: -6, duration: 0.4, ease: "sine.out" }, ">-=0.35");
-          if (mask) {
-            tl.to(mask, { autoAlpha: 0, duration: 0.32, ease: "power1.inOut" }, ">-=0.4");
-          }
+          if (mask) tl.fromTo(mask, { autoAlpha: 0 }, { autoAlpha: 0.22, duration: 0.24, ease: "power1.out" });
+          tl.fromTo(root.querySelector(".section"), { autoAlpha: 0, y: 28, rotate: -1.1 }, { autoAlpha: 1, y: 0, rotate: 0, duration: 0.78, ease: "power2.out" });
+          tl.to(root.querySelector(".section"), { y: -5, duration: 0.36, ease: "sine.out" }, ">-=0.32");
+          if (mask) tl.to(mask, { autoAlpha: 0, duration: 0.28, ease: "power1.inOut" }, ">-=0.36");
+          return tl;
+        },
+      },
+      {
+        id: "logbook",
+        el: sLogbook.current,
+        start: 2 / 4,
+        end: 3 / 4,
+        pin: true,
+        create: (root) => {
+          const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+          const mask = root.querySelector(".scene-mask") as HTMLElement | null;
+          if (mask) tl.fromTo(mask, { autoAlpha: 0 }, { autoAlpha: 0.22, duration: 0.24, ease: "power1.out" });
+          tl.fromTo(root.querySelector(".section"), { autoAlpha: 0, y: 28, rotate: 1.1 }, { autoAlpha: 1, y: 0, rotate: 0, duration: 0.78 });
+          tl.to(root.querySelector(".section"), { y: -5, duration: 0.36, ease: "sine.out" }, ">-=0.32");
+          if (mask) tl.to(mask, { autoAlpha: 0, duration: 0.28, ease: "power1.inOut" }, ">-=0.36");
           return tl;
         },
       },
       {
         id: "pricing",
         el: sPricing.current,
-        start: 2 / 3,
+        start: 3 / 4,
         end: 1,
         pin: true,
         create: (root) => gsap.timeline({ defaults: { ease: "power2.out" } })
@@ -82,17 +97,17 @@ export default function HomeOrchestrated() {
       onEnter: (id) => {
         // Trigger sweep overlay on scene boundaries (skip for reduced motion)
         if (reduce) return;
-        if (id === "products" || id === "pricing") {
-          // Add subtle delay when entering pricing
-          const delay = id === "pricing" ? 0.12 : 0;
+        if (id === "products" || id === "logbook" || id === "pricing") {
+          // Subtle delay when entering pricing and tiny delay for others
+          const delay = id === "pricing" ? 0.08 : 0.02;
           setSweepDelay(delay);
           setSweepVisible(true);
           if (sweepTimeout.current) window.clearTimeout(sweepTimeout.current);
-          sweepTimeout.current = window.setTimeout(() => setSweepVisible(false), 520);
+          sweepTimeout.current = window.setTimeout(() => setSweepVisible(false), 460);
         }
       },
       enableSnap: true,
-      extraSnapPoints: [0, 0.16, 0.33, 0.5, 0.66, 0.84, 1],
+      extraSnapPoints: [0, 0.25, 0.5, 0.75, 1],
       topOffsetPx: 64,
     }
   );
@@ -133,10 +148,18 @@ export default function HomeOrchestrated() {
           <div className="scene-mask pointer-events-none absolute inset-0 -z-10" />
           <ProductShowcase />
         </div>
+        <div ref={sLogbook} id="scene-logbook" className="mt-16 relative">
+          <div className="scene-mask pointer-events-none absolute inset-0 -z-10" />
+          <LogBook />
+        </div>
         <div ref={sPricing} id="scene-pricing" className="mt-16">
           <PricingTable />
         </div>
       </DecorWrapper>
+      {/* Newsletter CTA mirrors live site */}
+      <div className="mx-auto mt-16 max-w-4xl px-4">
+        <NewsletterSignup />
+      </div>
     </>
   );
 }

@@ -36,31 +36,29 @@ export default function PageTransitionProvider({ children }: Props) {
 
     return (
         <AnimatePresence mode="wait" initial={false}>
-            {/* Content fade/slide */}
+            {/* Content fade/slide with a touch of blur for premium feel */}
             <motion.div
                 key={pathname}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.33, ease: [0.22, 1, 0.36, 1], delay: 0.06 }}
+                initial={{ opacity: 0, y: 10, filter: "blur(5px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, y: -10, filter: "blur(5px)" }}
+                transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1], delay: 0.02 }}
             >
                 {children}
             </motion.div>
 
             {/* Branded sweep overlay: slides in from right and sweeps across on route change only */}
-            <AnimatePresence>
-                {showSweep && (
-                    <motion.div
-                        key="page-sweep-overlay"
-                        aria-hidden
-                        className="page-sweep-overlay"
-                        initial={{ x: "100%", opacity: 0.92 }}
-                        animate={{ x: "-100%", opacity: 1 }}
-                        exit={{ x: "-100%", opacity: 1 }}
-                        transition={{ duration: 0.68, ease: [0.22, 1, 0.36, 1] }}
-                    />
-                )}
-            </AnimatePresence>
+            {showSweep && (
+                <motion.div
+                    key="page-sweep-overlay"
+                    aria-hidden
+                    className="page-sweep-overlay"
+                    initial={{ x: "100%", opacity: 0.92 }}
+                    animate={{ x: "-100%", opacity: 1 }}
+                    exit={{ x: "-100%", opacity: 1 }}
+                    transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                />
+            )}
         </AnimatePresence>
     );
 }

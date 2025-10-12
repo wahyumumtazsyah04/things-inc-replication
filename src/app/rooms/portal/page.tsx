@@ -7,11 +7,13 @@ export const metadata: Metadata = {
         description: "Step into the next space—playful transitions between scenes.",
         type: "website",
         url: "/rooms/portal",
+        images: [{ url: "/api/og/static/rooms/portal" }],
     },
     twitter: {
         card: "summary_large_image",
         title: "Portal",
         description: "Step into the next space—playful transitions between scenes.",
+        images: ["/api/og/static/rooms/portal"],
     },
     alternates: { canonical: "/rooms/portal" },
 };

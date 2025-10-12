@@ -7,7 +7,11 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "copy:thingsinc": "node scripts/copy-thingsinc-assets.cjs"
+    "typecheck": "tsc --noEmit",
+    "check": "npm run lint && npm run typecheck",
+    "copy:thingsinc": "node scripts/copy-thingsinc-assets.cjs",
+    "audit:images": "node scripts/audit-images.mjs",
+    "convert:webp": "node scripts/convert-png-to-webp.mjs"
   },
   "dependencies": {
     "d3": "latest",
@@ -40,6 +44,7 @@
     "@types/three": "latest",
     "eslint": "latest",
     "eslint-config-next": "latest",
+    "sharp": "latest",
     "rehype-pretty-code": "latest",
     "tailwindcss": "latest",
     "typescript": "latest"

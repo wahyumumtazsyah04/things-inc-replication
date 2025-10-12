@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { cookies, headers } from "next/headers";
-import { Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
+import { fontDisplay, fontSans } from "@/lib/fonts";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -10,23 +10,15 @@ import PageTransitionProvider from "@/components/providers/PageTransitionProvide
 import CustomCursor from "@/components/ui/CustomCursor";
 import RouteChangeEffects from "@/components/providers/RouteChangeEffects";
 import AnalyticsEvents from "@/components/providers/AnalyticsEvents";
+import WebVitalsReporter from "@/components/providers/WebVitalsReporter";
+import DiagnosticsToggle from "@/components/providers/DiagnosticsToggle";
 import { CollectiblesProvider } from "@/components/providers/CollectiblesProvider";
 import { AmbienceProvider } from "@/components/providers/AmbienceProvider";
 import CollectiblesHUD from "@/components/ui/CollectiblesHUD";
+import ConsentBanner from "@/components/providers/ConsentBanner";
+import ConsentAnalytics from "@/components/providers/ConsentAnalytics";
 
-const fontSans = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-sans",
-  weight: ["400", "500", "600", "700"],
-});
-
-const fontDisplay = Space_Grotesk({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-display",
-  weight: ["400", "500", "600", "700"],
-});
+// fonts are centralized in src/lib/fonts (swap to local by replacing that module)
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
@@ -77,7 +69,7 @@ export default async function RootLayout({
   const themeCookie = cookieStore.get("theme")?.value as "day" | "night" | undefined;
   const hdrs = await headers();
   const prefersCH = hdrs.get("Sec-CH-Prefers-Color-Scheme")?.toLowerCase();
-  let initialTheme: "day" | "night" = "day";
+  let initialTheme: "day" | "night" = "night";
   if (themeCookie === "day" || themeCookie === "night") {
     initialTheme = themeCookie;
   } else if (prefersCH === "dark") {
@@ -97,54 +89,14 @@ export default async function RootLayout({
               if (t === 'day' || t === 'night') {
                 document.documentElement.setAttribute('data-theme', t);
               } else {
-                // Fallback: use local time-of-day if no stored preference (day: 6-18h, night: otherwise)
-                var h = new Date().getHours();
-                var auto = (h >= 6 && h < 18) ? 'day' : 'night';
-                document.documentElement.setAttribute('data-theme', auto);
+                // Fallback: default to night to match Things Inc atmosphere
+                document.documentElement.setAttribute('data-theme', 'night');
               }
             } catch (e) {}
           `}
         </Script>
-        {/* Analytics: GA4 and/or GTM, loaded only if env vars are present */}
-        {process.env.NEXT_PUBLIC_GA_ID && (
-          <>
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
-              strategy="afterInteractive"
-            />
-            <Script id="ga4-init" strategy="afterInteractive">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', {
-                  page_path: window.location.pathname,
-                });
-              `}
-            </Script>
-          </>
-        )}
-        {process.env.NEXT_PUBLIC_GTM_ID && (
-          <>
-            <Script id="gtm-init" strategy="afterInteractive">
-              {`
-                (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-                'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-                })(window,document,'script','dataLayer','${process.env.NEXT_PUBLIC_GTM_ID}');
-              `}
-            </Script>
-            <noscript>
-              <iframe
-                src={`https://www.googletagmanager.com/ns.html?id=${process.env.NEXT_PUBLIC_GTM_ID}`}
-                height="0"
-                width="0"
-                style={{ display: "none", visibility: "hidden" }}
-              />
-            </noscript>
-          </>
-        )}
+        {/* Consent-gated analytics boot */}
+        <ConsentAnalytics />
         {/* Basic JSON-LD for Organization */}
         <Script id="jsonld-org" type="application/ld+json" strategy="afterInteractive">
           {JSON.stringify({
@@ -153,14 +105,28 @@ export default async function RootLayout({
             name: "Things, Inc.",
             url: siteUrl,
             sameAs: [
-              "https://www.youtube.com/@thingsinc",
-              "https://x.com/thingsinc",
-              "https://www.threads.net/@thingsinc",
-              "https://www.tiktok.com/@thingsinc",
-              "https://discord.gg/thingsinc",
-              "https://www.instagram.com/thingsinc/"
+              "https://www.youtube.com/@things-inc",
+              "https://x.com/things",
+              "https://www.threads.net/@things_incorporated?hl=en",
+              "https://www.tiktok.com/@things",
+              "https://discord.gg/rooms",
+              "https://www.instagram.com/things_incorporated/"
             ],
             logo: `${siteUrl}/favicon.ico`
+          })}
+        </Script>
+        {/* WebSite JSON-LD with potentialSearchAction (placeholder) */}
+        <Script id="jsonld-website" type="application/ld+json" strategy="afterInteractive">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "Things, Inc.",
+            url: siteUrl,
+            potentialAction: {
+              "@type": "SearchAction",
+              target: `${siteUrl}/search?q={search_term_string}`,
+              "query-input": "required name=search_term_string"
+            }
           })}
         </Script>
         <AmbienceProvider initialTheme={initialTheme}>
@@ -178,12 +144,18 @@ export default async function RootLayout({
             {process.env.NEXT_PUBLIC_SHOW_HUD === "true" && <CollectiblesHUD />}
           </CollectiblesProvider>
         </AmbienceProvider>
+        {/* Consent banner (appears until accepted/declined) */}
+        <ConsentBanner />
         {/* Handle scroll + ScrollTrigger refresh on navigation */}
         <RouteChangeEffects />
         {/* Custom cursor for desktop pointers (hidden on touch automatically) */}
         <CustomCursor />
         {/* Analytics event wiring (pageviews + scroll depth) */}
         <AnalyticsEvents />
+        {/* Web Vitals (LCP/CLS/FID) reporter to GA/dataLayer; logs in dev */}
+        <WebVitalsReporter />
+        {/* Dev diagnostics toggle: Alt+D to outline LCP and Canvas regions */}
+        {process.env.NODE_ENV !== "production" && <DiagnosticsToggle />}
       </body>
     </html>
   );

@@ -1,48 +1,67 @@
 "use client";
 import React from "react";
-import Lenis from "lenis";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { usePrefersReducedMotion } from "@/lib/reduced-motion";
 
+// Defer heavy/SSR-unsafe imports until we are on the client
 export default function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
     const reduce = usePrefersReducedMotion();
 
     React.useEffect(() => {
-        // Register ScrollTrigger once on client
-        if (typeof window !== "undefined") {
-            gsap.registerPlugin(ScrollTrigger);
-        }
-        if (reduce) {
-            // When reduced motion is on, don't initialize Lenis; ensure ScrollTrigger is refreshed
-            try { ScrollTrigger.refresh(); } catch { }
-            return;
-        }
+        let cleanup: (() => void) | undefined;
+        let rafId: number | null = null;
+        let lenisInstance: any = null;
 
-        const lenis = new Lenis({
-            duration: 1.1,
-            smoothWheel: true,
-        });
+        const setup = async () => {
+            if (typeof window === "undefined") return;
+            // Import gsap and ScrollTrigger only on client
+            const [{ gsap }, { ScrollTrigger }] = await Promise.all([
+                import("gsap"),
+                import("gsap/ScrollTrigger"),
+            ]);
+            try { gsap.registerPlugin(ScrollTrigger); } catch { }
 
-        // Bridge Lenis with ScrollTrigger so scroll-driven animations stay in sync
-        const onLenisScroll = () => {
-            try { ScrollTrigger.update(); } catch { }
+            if (reduce) {
+                try { ScrollTrigger.refresh(); } catch { }
+                return;
+            }
+
+            // Import Lenis only on client
+            const { default: Lenis } = await import("lenis");
+            const lenis = new Lenis({
+                duration: 1.1,
+                smoothWheel: true,
+            });
+            lenisInstance = lenis;
+
+            // Bridge Lenis with ScrollTrigger so scroll-driven animations stay in sync
+            const onLenisScroll = () => {
+                try { (ScrollTrigger as any).update(); } catch { }
+            };
+            lenis.on("scroll", onLenisScroll);
+
+            const raf = (time: number) => {
+                lenis.raf(time);
+                rafId = requestAnimationFrame(raf);
+            };
+            rafId = requestAnimationFrame(raf);
+
+            cleanup = () => {
+                if (rafId) cancelAnimationFrame(rafId);
+                try {
+                    // Attempt to stop/cleanup if available
+                    (lenis as any).stop?.();
+                    (lenis as any).destroy?.();
+                    (ScrollTrigger as any).killAll?.(false);
+                } catch { }
+            };
         };
-        lenis.on("scroll", onLenisScroll);
 
-        function raf(time: number) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
-        }
-        const id = requestAnimationFrame(raf);
+        setup();
 
         return () => {
-            cancelAnimationFrame(id);
-            // Attempt to stop/cleanup if available without suppressing types
-            const cleaner = lenis as unknown as { stop?: () => void; destroy?: () => void };
-            cleaner.stop?.();
-            cleaner.destroy?.();
-            try { ScrollTrigger.killAll(false); } catch { }
+            cleanup?.();
+            cleanup = undefined;
+            lenisInstance = null;
         };
         // include reduce so when user toggles OS setting, we re-evaluate
     }, [reduce]);

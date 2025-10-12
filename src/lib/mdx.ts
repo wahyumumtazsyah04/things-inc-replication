@@ -33,11 +33,17 @@ export function getMDXBySlug(slug: string): MDXPost | null {
     const { data, content } = matter(raw);
     type FrontMatter = { title?: string; date?: string; summary?: string; image?: string; author?: string };
     const fm = data as FrontMatter;
+  // Derive a short summary if none is provided in frontmatter (first non-empty line up to 200 chars)
+  const derivedSummary = (() => {
+    if (fm.summary) return fm.summary;
+    const firstLine = content.split(/\r?\n/).map(s => s.trim()).find(Boolean) || "";
+    return firstLine ? (firstLine.length > 200 ? firstLine.slice(0, 197) + "..." : firstLine) : undefined;
+  })();
   return {
     slug,
       title: fm.title ?? slug,
       date: fm.date,
-      summary: fm.summary,
+      summary: derivedSummary,
       image: fm.image,
       author: fm.author,
     content,
@@ -48,7 +54,16 @@ export function listMDXPosts(): Array<Pick<MDXPost, "slug" | "title" | "summary"
   return listMDXSlugs()
     .map((slug: string) => getMDXBySlug(slug))
     .filter((p: MDXPost | null): p is MDXPost => Boolean(p))
-    .sort((a: MDXPost, b: MDXPost) => (a.date && b.date ? (a.date < b.date ? 1 : -1) : 0))
+    .sort((a: MDXPost, b: MDXPost) => {
+      // Descending by date; if missing or equal, fall back to slug
+      if (a.date && b.date) {
+        if (a.date === b.date) return a.slug.localeCompare(b.slug);
+        return a.date < b.date ? 1 : -1;
+      }
+      if (a.date && !b.date) return -1;
+      if (!a.date && b.date) return 1;
+      return a.slug.localeCompare(b.slug);
+    })
     .map(({ slug, title, summary, date }: MDXPost) => ({ slug, title, summary, date }));
 }
 

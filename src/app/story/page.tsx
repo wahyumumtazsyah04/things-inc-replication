@@ -13,6 +13,7 @@ import Image from "next/image";
 import { useOrchestrator, type SceneConfig } from "@/lib/orchestrator";
 import { useSceneTelemetry } from "@/lib/analytics";
 import dynamic from "next/dynamic";
+import MountOnVisible from "@/components/ui/MountOnVisible";
 const PortalScene3D = dynamic(() => import("@/components/decor/PortalScene3D"), { ssr: false });
 const IrisMask = dynamic(() => import("@/components/decor/IrisMask"), { ssr: false });
 const PixelAuditOverlay = dynamic(() => import("@/components/ui/PixelAuditOverlay"), { ssr: false });
@@ -130,8 +131,12 @@ export default function StoryPage() {
 
     return (
         <div className="relative">
-            {/* Portal reveal synced to second scene progress */}
-            {!reduce && <PortalScene3D progress={portalProgress} />}
+            {/* Portal reveal synced to second scene progress; mount only when visible */}
+            {!reduce && (
+                <MountOnVisible rootMargin="0px 0px -10% 0px">
+                    <PortalScene3D progress={portalProgress} />
+                </MountOnVisible>
+            )}
             <IrisMask show={irisShow} />
             <div className="sticky top-16 z-10 flex items-center justify-center gap-3 bg-[color:var(--header-bg)] px-3 py-2 text-xs backdrop-blur supports-[backdrop-filter]:bg-[color:var(--header-bg-blur)] sm:top-[72px]">
                 <span className="text-[color:var(--foreground)]/70">Demo scrollytelling: pinned sections + ambient clouds</span>

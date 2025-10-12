@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 type Props = {
   strength?: number; // px attraction radius
@@ -10,6 +10,13 @@ type Props = {
 
 export default function Magnetic({ strength = 60, intensity = 0.25, children, className = "" }: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
+  // Enable after mount to avoid SSR/CSR DOM shape differences
+  const [enabled, setEnabled] = useState(false);
+  useEffect(() => {
+    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const finePointer = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    setEnabled(!reduce && !!finePointer);
+  }, []);
 
   function onMove(e: React.MouseEvent) {
     const el = ref.current;
@@ -33,9 +40,10 @@ export default function Magnetic({ strength = 60, intensity = 0.25, children, cl
   return (
     <div
       ref={ref}
-      className={`inline-block will-change-transform transition-transform duration-200 ${className}`}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
+      className={`inline-block will-change-transform transition-transform duration-200 magnetic ${className}`}
+      onMouseMove={enabled ? onMove : undefined}
+      onMouseLeave={enabled ? onLeave : undefined}
+      data-magnetic-enabled={enabled ? "true" : "false"}
     >
       {children}
     </div>

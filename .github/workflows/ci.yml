@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+        working-directory: things-inc-replication
+      - name: Lint
+        run: npm run lint
+        working-directory: things-inc-replication
+      - name: Build
+        env:
+          NEXT_PUBLIC_SITE_URL: http://localhost:3000
+        run: npm run build
+        working-directory: things-inc-replication

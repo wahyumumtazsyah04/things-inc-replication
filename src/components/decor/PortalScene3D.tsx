@@ -40,11 +40,15 @@ function DisplacedPlane({ amp = 0.15, colorA = new THREE.Color(0.35, 0.36, 0.6),
     uniform vec3 uColB;
     uniform float uAlpha;
     varying vec2 vUv;
+    float easeInOut(float t){ return t*t*(3.0-2.0*t); }
     void main() {
-      // radial mask based on uReveal (0 closed -> 1 open)
+      // Non-linear reveal curve for closer reference tempo
+      float r = clamp(uReveal, 0.0, 1.0);
+      r = easeInOut(r);
       float d = distance(vUv, vec2(0.5));
-      float iris = smoothstep(0.5 * (1.0 - uReveal), 0.2 * (1.0 - uReveal), d);
-      float vignette = smoothstep(0.9, 0.2, d);
+      // tighter inner threshold with a slightly slower mid expansion
+      float iris = smoothstep(0.52 * (1.0 - r), 0.18 * (1.0 - r), d);
+      float vignette = smoothstep(0.92, 0.22, d);
       vec3 color = mix(uColA, uColB, d);
       gl_FragColor = vec4(color * vignette, uAlpha) * iris;
     }
@@ -69,6 +73,8 @@ function DisplacedPlane({ amp = 0.15, colorA = new THREE.Color(0.35, 0.36, 0.6),
 
 export default function PortalScene3D({ progress = 1 }: { progress?: number }) {
   const [enabled, setEnabled] = useState(false);
+  // Dev-only shader intensity multiplier (1 = normal)
+  const [intensity, setIntensity] = useState<number>(1);
   const { theme } = useAmbience();
   // Theme-aware palette tuned to day/night brand tones
   const palette = React.useMemo(() => {
@@ -108,7 +114,7 @@ export default function PortalScene3D({ progress = 1 }: { progress?: number }) {
       }
     `;
     return (
-      <mesh position={[0,0,0.51]}>
+      <mesh position={[0, 0, 0.51]}>
         <planeGeometry args={[4.6, 3.1, 1, 1]} />
         <shaderMaterial transparent depthWrite={false} blending={THREE.AdditiveBlending} uniforms={mat} vertexShader={vtx} fragmentShader={frg} />
       </mesh>
@@ -121,7 +127,7 @@ export default function PortalScene3D({ progress = 1 }: { progress?: number }) {
     const uniforms = useMemo(() => ({
       uStrength: { value: themeMode === 'night' ? 0.28 : 0.18 },
     }), [themeMode]);
-  useEffect(() => { invalidate(); }, [invalidate]);
+    useEffect(() => { invalidate(); }, [invalidate]);
     const vtx = /* glsl */`
       varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }
     `;
@@ -134,19 +140,55 @@ export default function PortalScene3D({ progress = 1 }: { progress?: number }) {
       }
     `;
     return (
-      <mesh position={[0,0,0.5]}>
+      <mesh position={[0, 0, 0.5]}>
         <planeGeometry args={[4.65, 3.2, 1, 1]} />
         <shaderMaterial transparent depthWrite={false} uniforms={uniforms} vertexShader={vtx} fragmentShader={frg} />
       </mesh>
     );
   }
   useEffect(() => {
+    // Detect reduced motion
     const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    setEnabled(!reduce);
+    if (reduce) { setEnabled(false); return; }
+    // Detect low power mode if exposed (Safari iOS and some browsers)
+    const lowPower = (navigator as any)?.battery?.saving || (navigator as any)?.deviceMemory === 0.25;
+    if (lowPower) { setEnabled(false); return; }
+    // Detect WebGL support
+    let glSupported = false;
+    try {
+      const canvas = document.createElement('canvas');
+      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      glSupported = !!gl;
+    } catch { glSupported = false; }
+    setEnabled(glSupported);
   }, []);
-  if (!enabled) return null;
+  if (!enabled) {
+    // Graceful non-WebGL fallback to keep premium feel for reduced-motion users
+    return (
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 portal-fallback" />
+    );
+  }
+  const showShaderDev = process.env.NEXT_PUBLIC_SHOW_SHADER_DEV === 'on';
   return (
-    <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0" data-dev-webgl={showShaderDev ? 'on' : undefined} data-canvas-root="portal-hero">
+      {showShaderDev && (
+        <>
+          <div className="dev-webgl-badge">WebGL</div>
+          <div className="dev-control dev-shader">
+            <label>
+              Shader x{intensity.toFixed(1)}
+              <input
+                type="range"
+                min={0.5}
+                max={3}
+                step={0.1}
+                value={intensity}
+                onChange={(e) => setIntensity(Number(e.target.value))}
+              />
+            </label>
+          </div>
+        </>
+      )}
       <Canvas dpr={[1, 1.5]} frameloop="demand" camera={{ position: [0, 0, 3.2], fov: 55 }} onPointerMove={() => { /* kick demand loop */ }}>
         {/* Invalidate when props that affect visuals change (e.g., progress, theme handled inside overlays) */}
         {/** Helper to invalidate on prop changes */}
@@ -154,20 +196,20 @@ export default function PortalScene3D({ progress = 1 }: { progress?: number }) {
         {/** eslint-disable-next-line react/jsx-no-useless-fragment */}
         <InvalidateOnChange value={progress} />
         <ambientLight intensity={theme === 'night' ? 0.45 : 0.6} />
-        <directionalLight position={[3, 5, 2]} intensity={theme === 'night' ? 0.55 : 0.7} color={theme === 'night' ? new THREE.Color(0.7,0.75,1) : new THREE.Color(1,0.95,0.9)} />
+        <directionalLight position={[3, 5, 2]} intensity={theme === 'night' ? 0.55 : 0.7} color={theme === 'night' ? new THREE.Color(0.7, 0.75, 1) : new THREE.Color(1, 0.95, 0.9)} />
         {/* Parallax layers with theme-aware palette */}
         <group>
           <group position={[0, -0.08, -0.15]}>
-            <DisplacedPlane amp={0.08} colorA={palette.a} colorB={palette.b} alpha={palette.alpha * 0.6} />
+            <DisplacedPlane amp={0.075 * intensity} colorA={palette.a} colorB={palette.b} alpha={palette.alpha * 0.58} />
           </group>
-          <DisplacedPlane amp={0.15} colorA={palette.a} colorB={palette.b} alpha={palette.alpha * 0.75} />
+          <DisplacedPlane amp={0.145 * intensity} colorA={palette.a} colorB={palette.b} alpha={palette.alpha * 0.74} />
           <group position={[0, 0.06, 0.12]}>
-            <DisplacedPlane amp={0.22} colorA={palette.a} colorB={palette.b} alpha={palette.alpha} />
+            <DisplacedPlane amp={0.215 * intensity} colorA={palette.a} colorB={palette.b} alpha={palette.alpha} />
           </group>
         </group>
         {/* Reveal overlay plane synced to progress (slightly above) */}
-        <group position={[0,0,0.25]}>
-          <DisplacedPlane amp={0.08} colorA={palette.a} colorB={palette.b} alpha={palette.alpha * 0.7} reveal={progress} />
+        <group position={[0, 0, 0.25]}>
+          <DisplacedPlane amp={0.075 * intensity} colorA={palette.a} colorB={palette.b} alpha={palette.alpha * 0.72} reveal={progress} />
         </group>
         {/* Subtle grain overlay */}
         <GrainOverlay />

@@ -31,12 +31,12 @@ export default function RoomsHero() {
       <div className="tunnel-mask-soft -z-10" />
 
       {/* Clouds */}
-      <Image ref={cloudLeftDay} src="/thingsinc/66f367a8274968c5aa82329f_footer-clouds-left_day.png" alt="" aria-hidden width={340} height={180} className="theme-day-only pointer-events-none hero-cloud-left opacity-70 sm:opacity-80" />
+  <Image ref={cloudLeftDay} src="/thingsinc/66f367a8274968c5aa82329f_footer-clouds-left_day.png" alt="" aria-hidden width={340} height={180} className="theme-day-only pointer-events-none hero-cloud-left opacity-70 sm:opacity-80" />
       <Image ref={cloudLeftNight} src="/thingsinc/66f367a85cb2687ca4e30838_footer-clouds-left_night.png" alt="" aria-hidden width={340} height={180} className="theme-night-only pointer-events-none hero-cloud-left opacity-70" />
-      <Image ref={cloudRightDay} src="/thingsinc/66f367a804f8c9cd92a372ce_footer-cloud-right_day.png" alt="" aria-hidden width={380} height={200} className="theme-day-only pointer-events-none hero-cloud-right opacity-70 sm:opacity-80" />
+  <Image ref={cloudRightDay} src="/thingsinc/66f367a804f8c9cd92a372ce_footer-cloud-right_day.png" alt="" aria-hidden width={380} height={200} className="theme-day-only pointer-events-none hero-cloud-right opacity-70 sm:opacity-80" />
       <Image ref={cloudRightNight} src="/thingsinc/66f367536d9cdf539095c9eb_footer-cloud-right_night.png" alt="" aria-hidden width={380} height={200} className="theme-night-only pointer-events-none hero-cloud-right opacity-70" />
 
-      <div ref={fgScaleRef} className="relative max-w-2xl">
+  <div ref={fgScaleRef} className="relative max-w-2xl">
         <div ref={h1Ref}>
           <WordReveal as="h1" stagger={0.05} className="tracking-tight">Rooms</WordReveal>
         </div>

@@ -3,17 +3,33 @@ import React from "react";
 import { getMotionOverride, setMotionOverride, usePrefersReducedMotion } from "@/lib/reduced-motion";
 
 export default function MotionToggle({ className = "" }: { className?: string }) {
+    type MotionPref = "auto" | "reduced" | "full";
     const osReduced = usePrefersReducedMotion();
-    const [pref, setPref] = React.useState(getMotionOverride());
-    const effectiveReduced = pref === "auto" ? osReduced : pref === "reduced";
+    // SSR-safe initial state: do not read localStorage until mounted
+    const [pref, setPref] = React.useState<MotionPref>("auto");
+    const [mounted, setMounted] = React.useState(false);
+
+    React.useEffect(() => {
+        setMounted(true);
+        // After mount, hydrate with stored preference (if any)
+        const stored = getMotionOverride();
+        setPref(stored);
+        // Reflect current motion pref on <html> for CSS hooks
+        try { document.documentElement.setAttribute("data-motion", stored); } catch {}
+    }, []);
+
+    const effectiveReduced = mounted
+        ? (pref === "auto" ? osReduced : pref === "reduced")
+        : false; // keep stable on SSR/first paint
 
     const cycle = () => {
-        const next = pref === "auto" ? "reduced" : pref === "reduced" ? "full" : "auto";
+        const next: MotionPref = pref === "auto" ? "reduced" : pref === "reduced" ? "full" : "auto";
         setPref(next);
         setMotionOverride(next);
     };
 
-    const label = `Motion: ${pref}${pref === "auto" ? osReduced ? " (reduced)" : " (full)" : ""}`;
+    // Until mounted, avoid adding OS-derived suffix to keep SSR/CSR consistent
+    const label = `Motion: ${pref}` + (mounted && pref === "auto" ? (osReduced ? " (reduced)" : " (full)") : "");
 
     return (
         <button

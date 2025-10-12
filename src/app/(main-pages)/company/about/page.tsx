@@ -4,6 +4,8 @@ import Reveal from "@/components/ui/Reveal";
 export const metadata = {
     title: "About",
     description: "Learn about Things, Inc.",
+    openGraph: { title: "About", description: "Learn about Things, Inc.", url: "/company/about", images: [{ url: "/api/og/static/about-us" }] },
+    twitter: { card: "summary_large_image", title: "About", images: ["/api/og/static/about-us"] },
 };
 
 export default function AboutPage() {
@@ -21,17 +23,17 @@ export default function AboutPage() {
                     and a touch of R3F for subtle WebGL depth.
                 </p>
             </Reveal>
-                        <script
-                            type="application/ld+json"
-                            dangerouslySetInnerHTML={{
-                                __html: JSON.stringify({
-                                    "@context": "https://schema.org",
-                                    "@type": "Organization",
-                                    name: "Things, Inc.",
-                                    url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
-                                }),
-                            }}
-                        />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "Organization",
+                        name: "Things, Inc.",
+                        url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+                    }),
+                }}
+            />
         </DecorWrapper>
     );
 }

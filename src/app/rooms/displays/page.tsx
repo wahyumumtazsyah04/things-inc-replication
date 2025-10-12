@@ -1,4 +1,15 @@
-export const metadata = { title: "Displays", alternates: { canonical: "/rooms/displays" }, openGraph: { url: "/rooms/displays" } };
+export const metadata = {
+    title: "Displays",
+    description: "Screens, scenes, and playful motion that bring rooms to life.",
+    alternates: { canonical: "/rooms/displays" },
+    openGraph: {
+        title: "Displays",
+        description: "Screens, scenes, and playful motion that bring rooms to life.",
+        url: "/rooms/displays",
+        images: [{ url: "/api/og/static/rooms/displays" }],
+    },
+    twitter: { card: "summary_large_image", title: "Displays", images: ["/api/og/static/rooms/displays"] },
+};
 import RoomSubHero from "@/components/features/rooms/RoomSubHero";
 import Reveal from "@/components/ui/Reveal";
 import Script from "next/script";
