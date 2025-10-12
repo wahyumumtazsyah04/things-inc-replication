@@ -21,9 +21,10 @@ const TITLES: Record<string, { title: string; subtitle: string }> = {
 
 export async function GET(
   _req: Request,
-  { params }: { params: { page: string } }
+  ctx: { params: Promise<{ page: string }> }
 ) {
-  const key = params.page.toLowerCase();
+  const { page } = await ctx.params;
+  const key = page.toLowerCase();
   const cfg = TITLES[key] ?? { title: key.replace(/[-_]/g, " "), subtitle: "Things, Inc." };
   return new ImageResponse(
     (

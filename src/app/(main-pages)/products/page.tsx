@@ -7,6 +7,7 @@ export const metadata = {
     title: "Products",
     description: "Explore our product lineup designed for modern teams.",
     robots: { index: false, follow: true },
+    alternates: { canonical: "/products" },
     openGraph: { title: "Products", description: "Explore our product lineup designed for modern teams.", type: "website" },
     twitter: { card: "summary", title: "Products" },
 };

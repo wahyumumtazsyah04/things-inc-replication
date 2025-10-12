@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { isReducedMotion } from "@/lib/reduced-motion";
 
 /**
  * CustomCursor
@@ -21,11 +22,10 @@ export default function CustomCursor() {
     }, []);
 
     React.useEffect(() => {
-        // Skip on SSR, reduced motion, or no fine pointer
+        // Skip on SSR, reduced motion (effective), or no fine pointer
         if (typeof window === "undefined") return;
-        const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         const finePointer = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-        if (reduce || !finePointer) return;
+        if (isReducedMotion() || !finePointer) return;
 
         mounted.current = true;
 
@@ -89,8 +89,8 @@ export default function CustomCursor() {
 
     // Render nothing on server and on the initial hydration render
     if (!isMounted) return null;
-    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const finePointer = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    const reduce = isReducedMotion();
+    const finePointer = typeof window !== 'undefined' && window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     if (reduce || !finePointer) return null;
 
     return (

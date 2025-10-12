@@ -16,6 +16,7 @@ export type MDXPost = {
   date?: string;
   summary?: string;
   image?: string;
+  author?: string;
   content: string;
 };
 
@@ -37,6 +38,7 @@ export function getMDXBySlug(slug: string): MDXPost | null {
     date: data.date,
     summary: data.summary,
     image: data.image,
+    author: data.author,
     content,
   };
 }

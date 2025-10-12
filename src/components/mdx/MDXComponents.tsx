@@ -3,6 +3,23 @@ import React from "react";
 import Image from "next/image";
 import type { MDXComponents as MDXMap } from "mdx/types";
 
+// Anchor that opens external links in a new tab with rel safety and consistent styles
+function Anchor(props: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
+    const { href = "", className = "", ...rest } = props;
+    const isExternal = typeof href === "string" && /^https?:\/\//i.test(href);
+    const rel = isExternal ? "noopener noreferrer" : rest.rel;
+    const target = isExternal ? "_blank" : rest.target;
+    return (
+        <a
+            href={href}
+            target={target}
+            rel={rel}
+            className={`cursor-hoverable underline-anim link-reset text-[color:var(--link)] hover:text-[color:var(--link-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--zenotika-ring)] ${className}`}
+            {...rest}
+        />
+    );
+}
+
 // Inline code
 function InlineCode(props: React.HTMLAttributes<HTMLElement>) {
     return <code className="rounded bg-gray-100 px-1 py-0.5 text-[0.95em] text-gray-800" {...props} />;
@@ -167,6 +184,7 @@ function ImageGrid({ images }: { images: Array<{ src: string; alt?: string; rati
 }
 
 const MDXComponents: MDXMap = {
+    a: Anchor,
     code: InlineCode,
     pre: Pre,
     img: Img,

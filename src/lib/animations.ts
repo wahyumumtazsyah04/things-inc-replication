@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import type { RefObject } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { isReducedMotion } from "@/lib/reduced-motion";
 
 // Register plugin on client
 if (typeof window !== "undefined") {
@@ -13,7 +14,7 @@ export function useFadeInUp<T extends HTMLElement>(delay = 0) {
     const ref = useRef<T | null>(null);
     useEffect(() => {
         if (!ref.current) return;
-        const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const reduce = isReducedMotion();
         if (reduce) return;
         const ctx = gsap.context(() => {
             gsap.fromTo(
@@ -34,7 +35,7 @@ export function useScrollReveal<T extends HTMLElement>(
     const ref = useRef<T | null>(null);
     useEffect(() => {
         if (!ref.current) return;
-        const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const reduce = isReducedMotion();
         if (reduce) return;
         const ctx = gsap.context(() => {
             // Prefer :scope selector for direct children; fallback to '*' if unsupported
@@ -80,7 +81,7 @@ export function useParallax<T extends HTMLElement>(
     const ref = useRef<T | null>(null);
     useEffect(() => {
         if (!ref.current) return;
-        const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const reduce = isReducedMotion();
         if (reduce) return;
         const el = ref.current;
         if (mobileAmount != null) {
@@ -151,7 +152,7 @@ export function useParallaxScale<T extends HTMLElement>(
     const ref = useRef<T | null>(null);
     useEffect(() => {
         if (!ref.current) return;
-        const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const reduce = isReducedMotion();
         if (reduce) return;
         const el = ref.current;
         if (mobileAmount != null || mobileScaleFrom != null || mobileScaleTo != null) {
@@ -222,7 +223,7 @@ export function useIntroTimeline(targets: Array<RefObject<HTMLElement | null>> =
     useEffect(() => {
         const elements = targets.map((r) => r.current).filter(Boolean) as HTMLElement[];
         if (!elements.length) return;
-        const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const reduce = isReducedMotion();
         if (reduce) return;
         const ctx = gsap.context(() => {
             const tl = gsap.timeline({ defaults: { ease: "power3.out" } });

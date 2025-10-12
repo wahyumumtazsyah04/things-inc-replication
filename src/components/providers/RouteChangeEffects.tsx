@@ -19,7 +19,9 @@ export default function RouteChangeEffects() {
   const pathname = usePathname();
   React.useEffect(() => {
     if (typeof window === "undefined") return;
-    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = typeof window !== 'undefined' && window.document?.documentElement?.getAttribute('data-motion') === 'reduced'
+      ? true
+      : (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
     // Use rAF to run after next paint to avoid fighting with transition mount
     const id = requestAnimationFrame(() => {
       try {

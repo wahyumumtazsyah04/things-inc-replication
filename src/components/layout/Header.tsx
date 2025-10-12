@@ -19,7 +19,23 @@ export default function Header() {
   const logoContainerRef = React.useRef<HTMLAnchorElement | null>(null);
   const menuPanelRef = React.useRef<HTMLDivElement | null>(null);
   const thingsMenuRef = React.useRef<HTMLDivElement | null>(null);
+  const thingsItemsRef = React.useRef<HTMLAnchorElement[]>([]);
   const reduced = usePrefersReducedMotion();
+
+  // Roving focus helpers for desktop dropdown
+  const moveRoving = (dir: 1 | -1) => {
+    const items = thingsItemsRef.current.filter(Boolean);
+    if (!items.length) return;
+    const idx = items.findIndex((el) => el === document.activeElement);
+    const next = idx === -1 ? (dir > 0 ? 0 : items.length - 1) : (idx + dir + items.length) % items.length;
+    items[next]?.focus();
+  };
+  const focusRoving = (index: number) => {
+    const items = thingsItemsRef.current.filter(Boolean);
+    if (!items.length) return;
+    const i = Math.max(0, Math.min(index, items.length - 1));
+    items[i]?.focus();
+  };
 
   type GtagFn = (command: "event", eventName: string, params?: Record<string, unknown>) => void;
   type AnalyticsWindow = {
@@ -143,10 +159,21 @@ export default function Header() {
                 if (e.key === 'ArrowDown') {
                   e.preventDefault();
                   setThingsOpen(true);
-                  (menu.querySelector('a,button') as HTMLElement | null)?.focus();
+                  (thingsItemsRef.current[0] || menu.querySelector('a,button'))?.focus?.();
                 } else if (e.key === 'Escape') {
                   setThingsOpen(false);
                   (e.currentTarget as HTMLButtonElement).focus();
+                } else if (e.key === 'ArrowUp') {
+                  e.preventDefault();
+                  setThingsOpen(true);
+                  const items = thingsItemsRef.current;
+                  (items[items.length - 1] as HTMLElement | undefined)?.focus?.();
+                } else if (e.key === 'Home') {
+                  e.preventDefault();
+                  if (thingsOpen) (thingsItemsRef.current[0] as HTMLElement | undefined)?.focus?.();
+                } else if (e.key === 'End') {
+                  e.preventDefault();
+                  if (thingsOpen) (thingsItemsRef.current[thingsItemsRef.current.length - 1] as HTMLElement | undefined)?.focus?.();
                 }
               }}
             >
@@ -161,6 +188,18 @@ export default function Header() {
                 if (e.key === 'Escape') {
                   setThingsOpen(false);
                   menuButtonDesktopRef.current?.focus();
+                } else if (e.key === 'ArrowDown') {
+                  e.preventDefault();
+                  moveRoving(1);
+                } else if (e.key === 'ArrowUp') {
+                  e.preventDefault();
+                  moveRoving(-1);
+                } else if (e.key === 'Home') {
+                  e.preventDefault();
+                  focusRoving(0);
+                } else if (e.key === 'End') {
+                  e.preventDefault();
+                  focusRoving(thingsItemsRef.current.length - 1);
                 }
               }}
               onBlur={(e) => {
@@ -169,8 +208,8 @@ export default function Header() {
                 if (!current.contains(next)) setThingsOpen(false);
               }}
             >
-              <Link href="/rooms" className="block rounded px-3 py-2 hover:bg-[color:var(--zenotika-surface)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--zenotika-ring)]">Rooms</Link>
-              <Link href="/a-bunch-of-things" className="block rounded px-3 py-2 hover:bg-[color:var(--zenotika-surface)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--zenotika-ring)]">A Bunch of Things</Link>
+              <Link ref={(el) => { if (el) thingsItemsRef.current[0] = el; }} href="/rooms" className="block rounded px-3 py-2 hover:bg-[color:var(--zenotika-surface)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--zenotika-ring)]">Rooms</Link>
+              <Link ref={(el) => { if (el) thingsItemsRef.current[1] = el; }} href="/a-bunch-of-things" className="block rounded px-3 py-2 hover:bg-[color:var(--zenotika-surface)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--zenotika-ring)]">A Bunch of Things</Link>
             </div>
           </div>
           <Magnetic>

@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { isReducedMotion } from "@/lib/reduced-motion";
 
 // Ensure plugin registered on client
 if (typeof window !== "undefined") {
@@ -52,7 +53,7 @@ export function useOrchestrator(scenes: SceneConfig[], opts: OrchestratorOptions
 
     useEffect(() => {
         // Reduced motion guard
-        const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const reduce = isReducedMotion();
         if (reduce) return;
 
         // Build timelines per scene

@@ -5,10 +5,11 @@ export const runtime = "nodejs"; // uses fs via getMDXBySlug
 
 export async function GET(
   _req: Request,
-  { params }: { params: { slug: string } }
+  ctx: { params: Promise<{ slug: string }> }
 ) {
-  const post = getMDXBySlug(params.slug);
-  const title = post?.title ?? params.slug.replace(/[-_]/g, " ");
+  const { slug } = await ctx.params;
+  const post = getMDXBySlug(slug);
+  const title = post?.title ?? slug.replace(/[-_]/g, " ");
   const subtitle = post?.summary ?? "Things, Inc. — Log book";
 
   return new ImageResponse(
@@ -51,4 +52,4 @@ export async function GET(
     { width: 1200, height: 630 }
   );
 }
- 
+

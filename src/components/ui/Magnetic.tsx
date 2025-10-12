@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
+import { isReducedMotion } from "@/lib/reduced-motion";
 
 type Props = {
   strength?: number; // px attraction radius
@@ -13,7 +14,8 @@ export default function Magnetic({ strength = 60, intensity = 0.25, children, cl
   // Enable after mount to avoid SSR/CSR DOM shape differences
   const [enabled, setEnabled] = useState(false);
   useEffect(() => {
-    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = isReducedMotion();
+    if (reduce) return;
     const finePointer = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     setEnabled(!reduce && !!finePointer);
   }, []);

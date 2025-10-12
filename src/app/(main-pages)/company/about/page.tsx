@@ -4,6 +4,7 @@ import Reveal from "@/components/ui/Reveal";
 export const metadata = {
     title: "About",
     description: "Learn about Things, Inc.",
+    alternates: { canonical: "/company/about" },
     openGraph: { title: "About", description: "Learn about Things, Inc.", url: "/company/about", images: [{ url: "/api/og/static/about-us" }] },
     twitter: { card: "summary_large_image", title: "About", images: ["/api/og/static/about-us"] },
 };

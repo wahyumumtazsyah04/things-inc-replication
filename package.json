@@ -14,6 +14,7 @@
     "convert:webp": "node scripts/convert-png-to-webp.mjs"
   },
   "dependencies": {
+    "fuse.js": "latest",
     "d3": "latest",
     "gray-matter": "latest",
     "gsap": "latest",

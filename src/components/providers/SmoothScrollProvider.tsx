@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { usePrefersReducedMotion } from "@/lib/reduced-motion";
+import { getLenisBaseOptions } from "@/lib/scroll";
 
 // Defer heavy/SSR-unsafe imports until we are on the client
 export default function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
@@ -10,6 +11,7 @@ export default function SmoothScrollProvider({ children }: { children: React.Rea
         let cleanup: (() => void) | undefined;
         let rafId: number | null = null;
         let lenisInstance: any = null;
+        let updateScheduled = false;
 
         const setup = async () => {
             if (typeof window === "undefined") return;
@@ -27,15 +29,17 @@ export default function SmoothScrollProvider({ children }: { children: React.Rea
 
             // Import Lenis only on client
             const { default: Lenis } = await import("lenis");
-            const lenis = new Lenis({
-                duration: 1.1,
-                smoothWheel: true,
-            });
+            const lenis = new Lenis(getLenisBaseOptions());
             lenisInstance = lenis;
 
             // Bridge Lenis with ScrollTrigger so scroll-driven animations stay in sync
             const onLenisScroll = () => {
-                try { (ScrollTrigger as any).update(); } catch { }
+                if (updateScheduled) return;
+                updateScheduled = true;
+                requestAnimationFrame(() => {
+                    updateScheduled = false;
+                    try { (ScrollTrigger as any).update(); } catch { }
+                });
             };
             lenis.on("scroll", onLenisScroll);
 

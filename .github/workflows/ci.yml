@@ -21,6 +21,9 @@ jobs:
       - name: Lint
         run: npm run lint
         working-directory: things-inc-replication
+      - name: Typecheck
+        run: npm run typecheck
+        working-directory: things-inc-replication
       - name: Build
         env:
           NEXT_PUBLIC_SITE_URL: http://localhost:3000

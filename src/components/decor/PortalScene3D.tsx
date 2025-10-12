@@ -4,6 +4,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import type { RootState } from "@react-three/fiber";
 import * as THREE from "three";
 import { useAmbience } from "@/components/providers/AmbienceProvider";
+import { isReducedMotion } from "@/lib/reduced-motion";
 
 function DisplacedPlane({ amp = 0.15, colorA = new THREE.Color(0.35, 0.36, 0.6), colorB = new THREE.Color(0.2, 0.2, 0.35), alpha = 0.65, reveal = 1 }) {
   const meshRef = useRef<THREE.Mesh>(null);
@@ -148,7 +149,7 @@ export default function PortalScene3D({ progress = 1 }: { progress?: number }) {
   }
   useEffect(() => {
     // Detect reduced motion
-    const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduce = isReducedMotion();
     if (reduce) { setEnabled(false); return; }
     // Detect low power mode if exposed (Safari iOS and some browsers)
     const lowPower = (navigator as any)?.battery?.saving || (navigator as any)?.deviceMemory === 0.25;

@@ -33,7 +33,7 @@ export default function ConsentAnalytics() {
         <>
             {gaId && (
                 <>
-                    <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} strategy="afterInteractive" />
+                    <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} strategy="afterInteractive" referrerPolicy="origin" crossOrigin="anonymous" />
                     <Script id="ga4-init" strategy="afterInteractive">
                         {`
               window.dataLayer = window.dataLayer || [];
@@ -45,7 +45,7 @@ export default function ConsentAnalytics() {
                 </>
             )}
             {gtmId && (
-                <Script id="gtm-init" strategy="afterInteractive">
+                <Script id="gtm-init" strategy="afterInteractive" referrerPolicy="origin" >
                     {`
             (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
             new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],

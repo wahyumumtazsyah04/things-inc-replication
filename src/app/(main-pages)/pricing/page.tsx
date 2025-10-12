@@ -7,6 +7,7 @@ export const metadata = {
   title: "Pricing",
   description: "Simple, transparent pricing for teams of all sizes.",
   robots: { index: false, follow: true },
+  alternates: { canonical: "/pricing" },
 };
 
 export default function PricingPage() {

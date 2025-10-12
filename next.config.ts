@@ -1,6 +1,16 @@
 import type { NextConfig } from "next";
+// Use a soft import for bundle analyzer to avoid type errors if types are missing
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const _withBundleAnalyzer: any = (() => {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    return require("@next/bundle-analyzer");
+  } catch {
+    return () => (config: NextConfig) => config;
+  }
+})();
 
-const nextConfig: NextConfig = {
+const baseConfig: NextConfig = {
   turbopack: {
     // Silence workspace root inference warning by pinning this project as root
     root: __dirname,
@@ -61,5 +71,8 @@ const nextConfig: NextConfig = {
     ];
   },
 };
+const withAnalyzer = _withBundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+});
 
-export default nextConfig;
+export default withAnalyzer(baseConfig);

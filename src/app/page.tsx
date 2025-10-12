@@ -1,6 +1,7 @@
 export const metadata = {
   title: "Home",
   description: "We make software we wish we had as kids—collaborative, playful, and a little weird.",
+  alternates: { canonical: "/" },
   openGraph: {
     title: "Things, Inc.",
     description: "We make software we wish we had as kids—collaborative, playful, and a little weird.",

@@ -1,15 +1,12 @@
 "use client";
 import React from "react";
 import { useFadeInUp, useParallax, useParallaxScale } from "@/lib/animations";
-import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import Magnetic from "@/components/ui/Magnetic";
 import MountOnVisible from "@/components/ui/MountOnVisible";
-import WordReveal from "@/components/ui/WordReveal";
-import CharReveal from "@/components/ui/CharReveal";
 import SkyBackdrop from "@/components/decor/SkyBackdrop";
 import StarParticles from "@/components/decor/StarParticles";
+import { isReducedMotion } from "@/lib/reduced-motion";
 
 const PortalScene3D = dynamic(() => import("@/components/decor/PortalScene3D"), { ssr: false });
 
@@ -28,7 +25,7 @@ export default function Hero({ portalProgressOverride }: HeroProps) {
     React.useEffect(() => {
         if (portalProgressOverride != null) return; // external control active
         if (!sectionRef.current) return;
-        const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduce = isReducedMotion();
         if (reduce) return; // respect reduced motion
         let st: import("gsap/ScrollTrigger").ScrollTrigger | null = null;
         let killed = false;
@@ -77,8 +74,7 @@ export default function Hero({ portalProgressOverride }: HeroProps) {
     React.useEffect(() => {
         let mounted = true;
         // Respect prefers-reduced-motion: skip entrance animation
-        const mql = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-        if (mql && mql.matches) return () => { mounted = false; };
+    if (isReducedMotion()) return () => { mounted = false; };
         import("gsap").then(({ gsap }) => {
             if (!mounted) return;
             const clouds = [cloudLeftDay.current, cloudLeftNight.current, cloudRightDay.current, cloudRightNight.current].filter(

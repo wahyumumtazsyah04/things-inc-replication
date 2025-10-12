@@ -62,27 +62,27 @@ export default function Footer() {
                         <h4 className="text-[color:var(--foreground)]">Follow</h4>
                         <Reveal selector=":scope > a" stagger={0.06} className="mt-3 flex items-center gap-3">
                             {/* Order per live site: Discord, Tiktok, Instagram, X/Twitter, Youtube, Threads */}
-                            <a href={social.discord} target="_blank" rel="noopener noreferrer" aria-label="Discord" className="transition-opacity hover:opacity-80">
+                            <a href={social.discord} target="_blank" rel="noopener noreferrer" aria-label="Discord (opens in new tab)" className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--zenotika-ring)] transition-opacity hover:opacity-80">
                                 <Image src="/thingsinc/66f36059c82b1e5845d15655_footer_discord-day.svg" alt="Discord" width={24} height={24} className="theme-day-only" />
                                 <Image src="/thingsinc/66f3602a274968c5aa7bb8ff_footer_discord-night.svg" alt="Discord" width={24} height={24} className="theme-night-only" />
                             </a>
-                            <a href={social.tiktok} target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="transition-opacity hover:opacity-80">
+                            <a href={social.tiktok} target="_blank" rel="noopener noreferrer" aria-label="TikTok (opens in new tab)" className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--zenotika-ring)] transition-opacity hover:opacity-80">
                                 <Image src="/thingsinc/66f36058d48d217d932d7ac5_footer_tiktok-day.svg" alt="TikTok" width={24} height={24} className="theme-day-only" />
                                 <Image src="/thingsinc/66f36058957f8216930752e7_footer_tiktok-night.svg" alt="TikTok" width={24} height={24} className="theme-night-only" />
                             </a>
-                            <a href={social.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="transition-opacity hover:opacity-80">
+                            <a href={social.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram (opens in new tab)" className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--zenotika-ring)] transition-opacity hover:opacity-80">
                                 <Image src="/thingsinc/66f360582d624b679becc8a8_footer_instagram-day.svg" alt="Instagram" width={24} height={24} className="theme-day-only" />
                                 <Image src="/thingsinc/66f3605861a90f310acdf217_footer_instagram-night.svg" alt="Instagram" width={24} height={24} className="theme-night-only" />
                             </a>
-                            <a href={social.x} target="_blank" rel="noopener noreferrer" aria-label="X" className="transition-opacity hover:opacity-80">
+                            <a href={social.x} target="_blank" rel="noopener noreferrer" aria-label="X (opens in new tab)" className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--zenotika-ring)] transition-opacity hover:opacity-80">
                                 <Image src="/thingsinc/66f36058b123ca59990b0d2c_footer_x-day.svg" alt="X" width={24} height={24} className="theme-day-only" />
                                 <Image src="/thingsinc/66f360584e79b06365002187_footer_x-night.svg" alt="X" width={24} height={24} className="theme-night-only" />
                             </a>
-                            <a href={social.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="transition-opacity hover:opacity-80">
+                            <a href={social.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube (opens in new tab)" className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--zenotika-ring)] transition-opacity hover:opacity-80">
                                 <Image src="/thingsinc/66f36059e1b812491915e08b_footer_youtube-day.svg" alt="YouTube" width={24} height={24} className="theme-day-only" />
                                 <Image src="/thingsinc/66f360594367a3be3f06f61a_footer_youtube-night.svg" alt="YouTube" width={24} height={24} className="theme-night-only" />
                             </a>
-                            <a href={social.threads} target="_blank" rel="noopener noreferrer" aria-label="Threads" className="transition-opacity hover:opacity-80">
+                            <a href={social.threads} target="_blank" rel="noopener noreferrer" aria-label="Threads (opens in new tab)" className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--zenotika-ring)] transition-opacity hover:opacity-80">
                                 <Image src="/thingsinc/66f3605939c6b8addd616a6c_footer_threads-day.svg" alt="Threads" width={24} height={24} className="theme-day-only" />
                                 <Image src="/thingsinc/66f3609217acabd402d408dc_footer_threads-night.svg" alt="Threads" width={24} height={24} className="theme-night-only" />
                             </a>

@@ -5,18 +5,19 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Script from "next/script";
+import dynamic from "next/dynamic";
 import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider";
 import PageTransitionProvider from "@/components/providers/PageTransitionProvider";
-import CustomCursor from "@/components/ui/CustomCursor";
-import RouteChangeEffects from "@/components/providers/RouteChangeEffects";
-import AnalyticsEvents from "@/components/providers/AnalyticsEvents";
-import WebVitalsReporter from "@/components/providers/WebVitalsReporter";
+const CustomCursor = dynamic(() => import("@/components/ui/CustomCursor"), { ssr: false });
+const RouteChangeEffects = dynamic(() => import("@/components/providers/RouteChangeEffects"), { ssr: false });
+const AnalyticsEvents = dynamic(() => import("@/components/providers/AnalyticsEvents"), { ssr: false });
+const WebVitalsReporter = dynamic(() => import("@/components/providers/WebVitalsReporter"), { ssr: false });
 import DiagnosticsToggle from "@/components/providers/DiagnosticsToggle";
 import { CollectiblesProvider } from "@/components/providers/CollectiblesProvider";
 import { AmbienceProvider } from "@/components/providers/AmbienceProvider";
 import CollectiblesHUD from "@/components/ui/CollectiblesHUD";
 import ConsentBanner from "@/components/providers/ConsentBanner";
-import ConsentAnalytics from "@/components/providers/ConsentAnalytics";
+const ConsentAnalytics = dynamic(() => import("@/components/providers/ConsentAnalytics"), { ssr: false });
 
 // fonts are centralized in src/lib/fonts (swap to local by replacing that module)
 
