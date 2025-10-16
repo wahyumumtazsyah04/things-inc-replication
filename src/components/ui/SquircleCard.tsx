@@ -3,11 +3,10 @@ import React from "react";
 
 type SquircleCardProps = React.PropsWithChildren<{
     className?: string;
-    as?: React.ElementType;
     variant?: "solid" | "glass" | "outline";
-    href?: string;
-    onClick?: React.MouseEventHandler;
+    role?: React.AriaRole;
     title?: string;
+    onClick?: React.MouseEventHandler<HTMLDivElement>;
 }>;
 
 function cx(...parts: Array<string | false | null | undefined>) {
@@ -18,12 +17,11 @@ function cx(...parts: Array<string | false | null | undefined>) {
  * SquircleCard
  * Clips its content to a superellipse using an SVG mask. Supports glass/outline variants.
  */
-export function SquircleCard({ className, children, as = "div", variant = "glass", ...rest }: SquircleCardProps) {
-        const Comp: any = as ?? "div";
+export function SquircleCard({ className = "", children, variant = "glass", ...rest }: SquircleCardProps) {
     return (
-        <Comp
+        <div
             {...rest}
-                className={cx(
+            className={cx(
                 "squircle relative overflow-hidden",
                 variant === "glass" && "bg-[color:var(--header-bg)]/70 supports-[backdrop-filter]:bg-[color:var(--header-bg-blur)] backdrop-blur",
                 variant === "solid" && "bg-[color:var(--zenotika-surface)]",
@@ -34,7 +32,7 @@ export function SquircleCard({ className, children, as = "div", variant = "glass
         >
             {/* mask applied via CSS class .squircle */}
             {children}
-        </Comp>
+        </div>
     );
 }
 

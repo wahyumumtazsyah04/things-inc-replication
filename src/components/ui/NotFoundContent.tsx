@@ -1,41 +1,114 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
 import React from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function NotFoundContent() {
-  const messages = [
-    "We couldn’t find the thing you were looking for.",
-    "The page took a wrong turn at the portal.",
-    "Oops—this room is still under construction.",
-  ];
-  const [msg, setMsg] = React.useState(messages[0]);
+  const pathname = usePathname();
+  const router = useRouter();
+
+  // Keyboard shortcuts: h,a,l,c to navigate quickly from the 404 "terminal".
   React.useEffect(() => {
-    setMsg(messages[Math.floor(Math.random() * messages.length)]);
-  }, []);
+    const onKey = (e: KeyboardEvent) => {
+      const key = e.key.toLowerCase();
+      if (["h", "a", "l", "c"].includes(key)) {
+        e.preventDefault();
+        if (key === "h") router.push("/");
+        if (key === "a") router.push("/about-us");
+        if (key === "l") router.push("/log-book");
+        if (key === "c") router.push("/contact");
+      }
+      if (key === "enter") router.push("/");
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [router]);
+
   return (
-    <section className="mx-auto flex max-w-4xl flex-col items-center px-4 py-20 text-center" aria-labelledby="nf-title">
-      <h1 id="nf-title" className="animate-in fade-in slide-in-from-top-2 duration-500 text-4xl font-bold tracking-tight">404</h1>
-      <p className="animate-in fade-in slide-in-from-top-2 delay-150 duration-500 mt-2 text-[color:var(--zenotika-muted)]">{msg}</p>
-      <div className="animate-in fade-in slide-in-from-bottom-2 delay-200 duration-500 mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <Image src="/thingsinc/67297fcbc32f2abc0494d557_hex_room_4.webp" alt="hex room 4" width={240} height={240} className="h-auto w-full rounded-lg border object-cover" />
-        <Image src="/thingsinc/67297fcb7f6587d3dc450334_hex_room_6.webp" alt="hex room 6" width={240} height={240} className="h-auto w-full rounded-lg border object-cover" />
-        <Image src="/thingsinc/67297fcb79d42fdd90bf5e93_hex_room_2.webp" alt="hex room 2" width={240} height={240} className="h-auto w-full rounded-lg border object-cover" />
-        <Image src="/thingsinc/67297fcbe000ef9fec53986f_hex_room_18.webp" alt="hex room 18" width={240} height={240} className="h-auto w-full rounded-lg border object-cover" />
-      </div>
-      <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-        <Link href="/" className="inline-flex items-center rounded-md border px-4 py-2 hover:opacity-90" aria-label="Go back to Home">
-          Home
-        </Link>
-        <Link href="/about-us" className="inline-flex items-center rounded-md border px-4 py-2 hover:opacity-90" aria-label="Read about us">
-          About us
-        </Link>
-        <Link href="/log-book" className="inline-flex items-center rounded-md border px-4 py-2 hover:opacity-90" aria-label="View the Log book">
-          Log book
-        </Link>
-        <Link href="/contact" className="inline-flex items-center rounded-md border px-4 py-2 hover:opacity-90" aria-label="Contact us">
-          Contact
-        </Link>
+    <section className="px-4 py-20" aria-labelledby="nf-title">
+      <h1 id="nf-title" className="sr-only">
+        404 Not Found
+      </h1>
+
+      <div
+        className="relative mx-auto w-full max-w-3xl overflow-hidden rounded-lg border bg-black font-mono text-[13px] leading-relaxed text-emerald-300 shadow-[0_0_40px_rgba(16,185,129,0.15)]"
+        role="region"
+        aria-label="Terminal output"
+      >
+        {/* Scanlines overlay */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-20 mix-blend-plus-lighter [background:repeating-linear-gradient(180deg,rgba(0,0,0,0)_0px,rgba(0,0,0,0)_2px,rgba(255,255,255,0.06)_3px,rgba(0,0,0,0)_4px)]" />
+
+        <div className="relative p-5">
+          <p className="select-none text-xs uppercase tracking-[0.2em] text-emerald-400/70">
+            Rooms BIOS v3.0 — 404 NOT FOUND
+          </p>
+          <div className="mt-3 h-px w-full bg-emerald-500/30" />
+
+          <div className="mt-4 space-y-1">
+            <p>$ system.check()</p>
+            <p>› status: ok</p>
+            <p>› route: {pathname || "/"}</p>
+            <p>› error: resource missing</p>
+          </div>
+
+          <div className="mt-6 space-y-1">
+            <p>$ help</p>
+            <p>
+              [H] Home <span className="text-emerald-500/50">·</span> [A] About
+              <span className="text-emerald-500/50"> · </span>[L] Log book
+              <span className="text-emerald-500/50"> · </span>[C] Contact
+            </p>
+          </div>
+
+          <nav className="mt-4 flex flex-wrap gap-2" aria-label="404 navigation suggestions">
+            <Link
+              href="/"
+              className="underline underline-offset-2 hover:text-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
+              aria-label="Go back to Home"
+            >
+              Home
+            </Link>
+            <span className="text-emerald-500/50">•</span>
+            <Link
+              href="/about-us"
+              className="underline underline-offset-2 hover:text-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
+              aria-label="Read about us"
+            >
+              About us
+            </Link>
+            <span className="text-emerald-500/50">•</span>
+            <Link
+              href="/log-book"
+              className="underline underline-offset-2 hover:text-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
+              aria-label="View the Log book"
+            >
+              Log book
+            </Link>
+            <span className="text-emerald-500/50">•</span>
+            <Link
+              href="/contact"
+              className="underline underline-offset-2 hover:text-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
+              aria-label="Contact us"
+            >
+              Contact
+            </Link>
+          </nav>
+
+          <div className="mt-6 flex items-center">
+            <span className="pr-2">$</span>
+            <span aria-hidden className="blink-cursor inline-block h-4 w-2 translate-y-[1px] bg-emerald-300" />
+            <span className="sr-only">Blinking cursor</span>
+          </div>
+        </div>
+
+        {/* Local keyframes for blinking cursor */}
+        <style jsx>{`
+          @keyframes blink { 0%, 49% { opacity: 1 } 50%, 100% { opacity: 0 } }
+          .blink-cursor { animation: blink 1.2s steps(2) infinite; }
+          @media (prefers-reduced-motion: reduce) {
+            .blink-cursor { animation: none !important; }
+          }
+        `}</style>
       </div>
     </section>
   );

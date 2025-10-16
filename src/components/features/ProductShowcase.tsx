@@ -38,7 +38,16 @@ export default function ProductShowcase() {
                     </SquircleCard>
                 </Link>
 
-                {/* Right bottom: intentionally left empty to align with live site (only two items) */}
+                {/* Right bottom: Worlds teaser (not a link) */}
+                <div className="reveal group">
+                    <SquircleCard className="relative h-full p-3 collage-float">
+                        <div className="corner-dot bl" />
+                        <div className="caption-bubble small" role="group" aria-label="Worlds">
+                            <h3 className="title">Worlds</h3>
+                            <p className="sub">Coming... eventually</p>
+                        </div>
+                    </SquircleCard>
+                </div>
             </div>
         </section>
     );

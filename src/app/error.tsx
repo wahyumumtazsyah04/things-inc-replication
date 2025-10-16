@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Link from "next/link";
 
 export default function GlobalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
     React.useEffect(() => {
@@ -15,7 +16,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
                     <button onClick={() => reset()} className="rounded-md bg-[color:var(--zenotika-accent)] px-4 py-2 text-[color:var(--zenotika-accent-contrast)] shadow">
                         Try again
                     </button>
-                    <a href="/" className="rounded-md border px-4 py-2">Back home</a>
+                    <Link href="/" className="rounded-md border px-4 py-2">Back home</Link>
                 </div>
                 {process.env.NODE_ENV !== 'production' && error?.digest && (
                     <p className="mt-4 text-xs opacity-60">Error ID: {error.digest}</p>

@@ -6,7 +6,6 @@ import { useOrchestrator, type SceneConfig } from "@/lib/orchestrator";
 import Hero from "@/components/features/Hero";
 import ProductShowcase from "@/components/features/ProductShowcase";
 import LogBook from "@/components/features/LogBook";
-import PricingTable from "@/components/features/PricingTable";
 import NewsletterSignup from "@/components/ui/NewsletterSignup";
 import DecorWrapper from "@/components/decor/DecorWrapper";
 import dynamic from "next/dynamic";
@@ -19,11 +18,11 @@ export default function HomeOrchestrated() {
   const sHero = React.useRef<HTMLDivElement>(null);
   const sProducts = React.useRef<HTMLDivElement>(null);
   const sLogbook = React.useRef<HTMLDivElement>(null);
-  const sPricing = React.useRef<HTMLDivElement>(null);
+  // Pricing section is not present on the live site; removed for parity
 
   const reduce = usePrefersReducedMotion();
   const [heroP, setHeroP] = React.useState(0);
-  const latest = React.useRef({ hero: 0, products: 0, pricing: 0 });
+  const latest = React.useRef({ hero: 0, products: 0 });
   const raf = React.useRef<number | null>(null);
   const [sweepVisible, setSweepVisible] = React.useState(false);
   const [sweepDelay, setSweepDelay] = React.useState(0);
@@ -74,15 +73,7 @@ export default function HomeOrchestrated() {
           return tl;
         },
       },
-      {
-        id: "pricing",
-        el: sPricing.current,
-        start: 0.8,
-        end: 1,
-        pin: true,
-        create: (root) => gsap.timeline({ defaults: { ease: "power2.out" } })
-          .fromTo(root.querySelector(".section"), { autoAlpha: 0, y: 30, rotate: 1.2 }, { autoAlpha: 1, y: 0, rotate: 0, duration: 0.85 }),
-      },
+      // Pricing scene intentionally omitted
     ] as SceneConfig[],
     {
       onProgress: (id, p) => {
@@ -97,9 +88,8 @@ export default function HomeOrchestrated() {
       onEnter: (id) => {
         // Trigger sweep overlay on scene boundaries (skip for reduced motion)
         if (reduce) return;
-        if (id === "products" || id === "logbook" || id === "pricing") {
-          // Slightly quicker masks on mid scenes; a hint longer for pricing
-          const delay = id === "pricing" ? 0.06 : 0.015;
+        if (id === "products" || id === "logbook") {
+          const delay = 0.015;
           setSweepDelay(delay);
           setSweepVisible(true);
           if (sweepTimeout.current) window.clearTimeout(sweepTimeout.current);
@@ -107,7 +97,7 @@ export default function HomeOrchestrated() {
         }
       },
       enableSnap: true,
-      extraSnapPoints: [0, 0.27, 0.55, 0.8, 1],
+      extraSnapPoints: [0, 0.27, 0.55, 1],
       topOffsetPx: 64,
       snapConfig: { duration: 0.54, delay: 0.015, ease: "power3.out" },
     }
@@ -153,9 +143,7 @@ export default function HomeOrchestrated() {
           <div className="scene-mask pointer-events-none absolute inset-0 -z-10" />
           <LogBook />
         </div>
-        <div ref={sPricing} id="scene-pricing" className="mt-16">
-          <PricingTable />
-        </div>
+        {/* Pricing removed to mirror live site */}
       </DecorWrapper>
       {/* Newsletter CTA mirrors live site */}
       <div className="mx-auto mt-16 max-w-4xl px-4">

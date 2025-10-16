@@ -9,14 +9,29 @@ export const metadata = {
 import DecorWrapper from "@/components/decor/DecorWrapper";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Reveal from "@/components/ui/Reveal";
+import Script from "next/script";
 
 export default function ContactPage() {
     return (
         <DecorWrapper showGrid>
-            <SectionHeader title="Contact" subtitle="Reach us at contact@example.com" />
+            <Script id="jsonld-breadcrumbs-contact" type="application/ld+json">
+                {JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "BreadcrumbList",
+                    itemListElement: [
+                        { "@type": "ListItem", position: 1, name: "Home", item: "/" },
+                        { "@type": "ListItem", position: 2, name: "Contact", item: "/contact" },
+                    ],
+                })}
+            </Script>
+            <SectionHeader title="Contact" subtitle="We read every email. Really." />
             <Reveal className="mt-6 max-w-2xl">
                 <div className="rounded-lg border p-4">
-                    <p className="text-[color:var(--muted)]">We&#39;d love to hear from you. Drop a line and we&#39;ll get back soon.</p>
+                    <p className="text-[color:var(--muted)]">
+                        Email us at
+                        {" "}
+                        <a className="font-medium underline" href="mailto:hi@things.inc?subject=Website%20Contact">hi@things.inc</a>.
+                    </p>
                 </div>
             </Reveal>
         </DecorWrapper>

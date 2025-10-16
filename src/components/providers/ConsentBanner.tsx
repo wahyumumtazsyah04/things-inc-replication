@@ -19,7 +19,7 @@ function setConsent(v: "granted" | "denied") {
         localStorage.setItem("consent", v);
         const maxAge = 60 * 60 * 24 * 180; // 180 days
         document.cookie = `consent=${v}; Path=/; Max-Age=${maxAge}; SameSite=Lax`;
-        (window as any).__consentGranted = v === "granted";
+    (window as Window & { __consentGranted?: boolean }).__consentGranted = v === "granted";
         window.dispatchEvent(new CustomEvent("consent:changed", { detail: { granted: v === "granted" } }));
     } catch { }
 }
@@ -30,8 +30,8 @@ export default function ConsentBanner() {
         if (typeof window === "undefined") return;
         const current = getConsent();
           // Only explicitly set granted/denied when known; leave undefined if no decision yet
-          if (current === "granted") (window as any).__consentGranted = true;
-          else if (current === "denied") (window as any).__consentGranted = false;
+          if (current === "granted") (window as Window & { __consentGranted?: boolean }).__consentGranted = true;
+          else if (current === "denied") (window as Window & { __consentGranted?: boolean }).__consentGranted = false;
         // Show banner only when no decision yet
         setVisible(current === null);
     }, []);

@@ -43,7 +43,7 @@ export async function POST(req: Request) {
     // TODO: Integrate with ESP (Resend/Mailchimp/Brevo) here.
     // For now, no-op success response.
     return NextResponse.json({ ok: true });
-  } catch (err) {
+  } catch {
     return NextResponse.json({ ok: false, error: "server_error" }, { status: 500 });
   }
 }

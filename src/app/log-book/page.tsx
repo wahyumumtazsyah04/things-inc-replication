@@ -7,6 +7,14 @@ export const metadata: Metadata = {
   title: "Log book",
   description: "Logs and updates from Things, Inc.",
   alternates: { canonical: "/log-book" },
+  openGraph: {
+    title: "Log book",
+    description: "Logs and updates from Things, Inc.",
+    type: "website",
+    url: "/log-book",
+    images: [{ url: "/api/og/static/log-book" }],
+  },
+  twitter: { card: "summary_large_image", title: "Log book", images: ["/api/og/static/log-book"] },
 };
 
 export default function LogBookIndex() {

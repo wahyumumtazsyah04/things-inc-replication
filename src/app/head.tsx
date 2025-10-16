@@ -3,7 +3,6 @@ export default function Head() {
     <>
       {/* Early motion preference init: set data-motion before hydration to avoid flashes */}
       <script
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{
           __html: `(() => { try {
             var pref = localStorage.getItem('motionPref') || 'auto';

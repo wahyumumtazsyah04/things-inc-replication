@@ -15,7 +15,7 @@ export default function ConsentAnalytics() {
         if (typeof window === "undefined") return;
         const init = () => {
             // Only enable when explicitly granted; treat undefined as not granted
-            const granted = (window as any).__consentGranted === true;
+            const granted = (window as Window & { __consentGranted?: boolean }).__consentGranted === true;
             setEnabled(granted);
         };
         init();

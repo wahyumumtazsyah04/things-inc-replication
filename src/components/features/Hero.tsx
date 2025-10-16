@@ -165,11 +165,12 @@ export default function Hero({ portalProgressOverride }: HeroProps) {
                 {/* Small intro above logo */}
                 <p ref={pRef} className="text-sm tracking-wide uppercase text-[color:var(--foreground)]/75">Hello! We are</p>
                 {/* Prominent logo as hero title (day/night variants) */}
-                <div ref={h1Ref} data-lcp="target" className="mt-1 flex items-center justify-center">
+                <div ref={h1Ref} data-lcp="target" className="mt-1 flex items-center justify-center" suppressHydrationWarning>
                     {/* Accessible H1 for screen readers; logo images are decorative */}
                     <h1 className="sr-only">Things, Inc.</h1>
                     {/* Day logo */}
                     <Image
+                        key="logo-day"
                         src="/thingsinc/6724406f04b26f75915dd8c2_Home-logo_day.webp"
                         alt=""
                         aria-hidden
@@ -182,6 +183,7 @@ export default function Hero({ portalProgressOverride }: HeroProps) {
                     />
                     {/* Night logo */}
                     <Image
+                        key="logo-night"
                         src="/thingsinc/6705b9208ebb9e666ec8413b_Home-logo_night.webp"
                         alt=""
                         aria-hidden

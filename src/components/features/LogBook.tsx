@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import SquircleCard from "@/components/ui/SquircleCard";
 import { useScrollReveal } from "@/lib/animations";
 
@@ -10,7 +11,7 @@ export default function LogBook() {
     <section aria-labelledby="logbook-heading" className="section">
       <div className="flex items-end justify-between mb-6">
         <h2 id="logbook-heading" className="text-3xl font-bold">Log Book</h2>
-  <a href="/log-book" className="underline-anim text-sm">View all logs</a>
+        <Link href="/log-book" className="underline-anim text-sm">View all logs</Link>
       </div>
       <div ref={revealRef} className="collage-grid logbook-grid">
         {/* Featured big card (left, spans 2 rows) */}

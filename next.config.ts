@@ -1,14 +1,25 @@
 import type { NextConfig } from "next";
-// Use a soft import for bundle analyzer to avoid type errors if types are missing
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const _withBundleAnalyzer: any = (() => {
+// Typed dynamic import for bundle analyzer (optional dependency)
+type WithBundleAnalyzer = (opts?: { enabled?: boolean }) => (config: NextConfig) => NextConfig;
+const loadBundleAnalyzer = async (): Promise<WithBundleAnalyzer> => {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    return require("@next/bundle-analyzer");
+    const mod: unknown = await import("@next/bundle-analyzer");
+    if (
+      typeof mod === "object" &&
+      mod !== null &&
+      "default" in (mod as Record<string, unknown>) &&
+      typeof (mod as { default: unknown }).default === "function"
+    ) {
+      return (mod as { default: WithBundleAnalyzer }).default;
+    }
+    if (typeof mod === "function") {
+      return mod as WithBundleAnalyzer;
+    }
   } catch {
-    return () => (config: NextConfig) => config;
+    // ignore if analyzer is not installed
   }
-})();
+  return (_opts?: { enabled?: boolean }) => (config: NextConfig) => config;
+};
 
 const baseConfig: NextConfig = {
   turbopack: {
@@ -66,13 +77,27 @@ const baseConfig: NextConfig = {
       { source: "/privacy-policy", destination: "/privacy", permanent: true },
       { source: "/terms-of-service", destination: "/terms", permanent: true },
       { source: "/company/about", destination: "/about-us", permanent: true },
+      // Removed sections → closest equivalents
       { source: "/blog", destination: "/log-book", permanent: false },
       { source: "/blog/:slug", destination: "/log-book/:slug", permanent: false },
+      { source: "/search", destination: "/", permanent: false },
+      { source: "/story", destination: "/", permanent: false },
+      { source: "/rooms/displays", destination: "/rooms", permanent: false },
+      { source: "/rooms/furniture", destination: "/rooms", permanent: false },
+      { source: "/rooms/mirror", destination: "/rooms", permanent: false },
+      { source: "/rooms/portal", destination: "/rooms", permanent: false },
+      { source: "/pricing", destination: "/", permanent: false },
+      { source: "/products", destination: "/", permanent: false },
     ];
   },
 };
-const withAnalyzer = _withBundleAnalyzer({
-  enabled: process.env.ANALYZE === "true",
-});
+// If ANALYZE is enabled at runtime, wrap config with analyzer; otherwise export baseConfig
+const configOrPromise = (async () => {
+  if (process.env.ANALYZE === "true") {
+    const withBundleAnalyzer = await loadBundleAnalyzer();
+    return withBundleAnalyzer({ enabled: true })(baseConfig);
+  }
+  return baseConfig;
+})();
 
-export default withAnalyzer(baseConfig);
+export default (configOrPromise as unknown as NextConfig);

@@ -56,6 +56,13 @@ export function useOrchestrator(scenes: SceneConfig[], opts: OrchestratorOptions
         try { return JSON.parse(extraSnapKey) as number[]; } catch { return []; }
     }, [extraSnapKey]);
 
+    // Stable key for snap config to satisfy exhaustive-deps without re-creating on identical values
+    const snapCfgKey = useMemo(() => JSON.stringify({
+        d: opts.snapConfig?.duration ?? 0.58,
+        l: opts.snapConfig?.delay ?? 0.02,
+        e: opts.snapConfig?.ease ?? "power3.out"
+    }), [opts.snapConfig?.duration, opts.snapConfig?.delay, opts.snapConfig?.ease]);
+
     useEffect(() => {
         // Reduced motion guard
         const reduce = isReducedMotion();
@@ -96,6 +103,7 @@ export function useOrchestrator(scenes: SceneConfig[], opts: OrchestratorOptions
             1
         ])).sort((a, b) => a - b) : null;
 
+        const snapCfg = JSON.parse(snapCfgKey) as { d: number; l: number; e: string };
         const root = ScrollTrigger.create({
             trigger: document.documentElement,
             start: 0,
@@ -116,9 +124,9 @@ export function useOrchestrator(scenes: SceneConfig[], opts: OrchestratorOptions
                     }
                     return nearest * h; // return pixel position
                 },
-                duration: opts.snapConfig?.duration ?? 0.58,
-                delay: opts.snapConfig?.delay ?? 0.02,
-                ease: opts.snapConfig?.ease ?? "power3.out",
+                duration: snapCfg.d,
+                delay: snapCfg.l,
+                ease: snapCfg.e,
             } : undefined,
             onUpdate: (self) => {
                 const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -144,5 +152,5 @@ export function useOrchestrator(scenes: SceneConfig[], opts: OrchestratorOptions
             pins.forEach((p) => p.kill());
             timelines.forEach((tl) => tl.kill());
         };
-    }, [scenesKey, scenes, enableSnap, topOffsetPx, onProgress, onEnter, onExit, extraSnapKey, extraSnapPoints]);
+    }, [scenesKey, scenes, enableSnap, topOffsetPx, onProgress, onEnter, onExit, extraSnapKey, extraSnapPoints, snapCfgKey]);
 }

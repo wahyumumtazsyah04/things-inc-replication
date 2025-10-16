@@ -9,6 +9,10 @@ import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode from "rehype-pretty-code";
 import DecorWrapper from "@/components/decor/DecorWrapper";
 import Reveal from "@/components/ui/Reveal";
+import Link from "next/link";
+import type { Metadata } from "next";
+import type { Pluggable } from "unified";
+type MdxSerializeOptions = { mdxOptions?: { remarkPlugins?: Pluggable[]; rehypePlugins?: Pluggable[] } };
 
 type Params = { params: { slug: string } };
 
@@ -16,12 +20,12 @@ export async function generateStaticParams() {
   return listMDXSlugs().map((slug: string) => ({ slug }));
 }
 
-export async function generateMetadata({ params }: Params) {
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const post = getMDXBySlug(params.slug);
   const title = post ? post.title : "Log";
   const description = post?.summary ?? undefined;
   const ogUrl = post?.image ? post.image : `/api/og/log-book/${params.slug}`;
-  const ogImages = ogUrl ? [{ url: ogUrl }] : undefined;
+  const ogImages: NonNullable<Metadata["openGraph"]>["images"] = ogUrl ? [{ url: ogUrl }] : undefined;
   return {
     title,
     description,
@@ -37,9 +41,9 @@ export async function generateMetadata({ params }: Params) {
       card: "summary_large_image",
       title,
       description,
-      images: ogImages?.map((i) => i.url),
+      images: ogImages?.map((i) => (typeof i === "string" || i instanceof URL ? i : i.url)),
     },
-  } as any;
+  };
 }
 
 export default function LogBookPostPage({ params }: Params) {
@@ -67,12 +71,12 @@ export default function LogBookPostPage({ params }: Params) {
       logo: { "@type": "ImageObject", url: "/favicon.ico" }
     }
   };
-  const serializeOptions = ({
+  const serializeOptions: MdxSerializeOptions = {
     mdxOptions: {
-      remarkPlugins: [remarkGfm],
+      remarkPlugins: [remarkGfm as unknown as Pluggable],
       rehypePlugins: [
-        rehypeSlug,
-        [rehypeAutolinkHeadings, { behavior: "wrap" }],
+        rehypeSlug as unknown as Pluggable,
+        [rehypeAutolinkHeadings, { behavior: "wrap" }] as unknown as Pluggable,
         [
           rehypePrettyCode,
           {
@@ -82,10 +86,10 @@ export default function LogBookPostPage({ params }: Params) {
             },
             keepBackground: false,
           },
-        ],
+        ] as unknown as Pluggable,
       ],
     },
-  } as unknown) as any;
+  };
   return (
     <DecorWrapper>
       <Reveal selector="> *" stagger={0.06} className="mx-auto max-w-3xl">
@@ -115,12 +119,12 @@ export default function LogBookPostPage({ params }: Params) {
           <nav className="mt-10 flex items-center justify-between text-sm">
             <span>
               {prev && (
-                <a className="underline-anim link-reset" href={`/log-book/${prev.slug}`} rel="prev">← {prev.title}</a>
+                <Link className="underline-anim link-reset" href={`/log-book/${prev.slug}`} rel="prev">← {prev.title}</Link>
               )}
             </span>
             <span>
               {next && (
-                <a className="underline-anim link-reset" href={`/log-book/${next.slug}`} rel="next">{next.title} →</a>
+                <Link className="underline-anim link-reset" href={`/log-book/${next.slug}`} rel="next">{next.title} →</Link>
               )}
             </span>
           </nav>

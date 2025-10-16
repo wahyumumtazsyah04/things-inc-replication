@@ -33,7 +33,9 @@ export default function MediaAssetsPage() {
                     itemListElement: [
                         { "@type": "ListItem", position: 1, name: "Home-logo_day.png", url: "/thingsinc/6724406f04b26f75915dd8c2_Home-logo_day.png" },
                         { "@type": "ListItem", position: 2, name: "Home-logo_night.png", url: "/thingsinc/6705b9208ebb9e666ec8413b_Home-logo_night.png" },
-                        { "@type": "ListItem", position: 3, name: "hex_room_1.webp", url: "/thingsinc/67297fcb3d8968f4ca826780_hex_room_1.webp" },
+                        { "@type": "ListItem", position: 3, name: "Home-logo_day.webp", url: "/thingsinc/6724406f04b26f75915dd8c2_Home-logo_day.webp" },
+                        { "@type": "ListItem", position: 4, name: "Home-logo_night.webp", url: "/thingsinc/6705b9208ebb9e666ec8413b_Home-logo_night.webp" },
+                        { "@type": "ListItem", position: 5, name: "hex_room_1.webp", url: "/thingsinc/67297fcb3d8968f4ca826780_hex_room_1.webp" },
                     ],
                 })}
             </Script>
@@ -46,6 +48,7 @@ export default function MediaAssetsPage() {
                 <Asset src="/thingsinc/6724406f04b26f75915dd8c2_Home-logo_day.png" alt="Logo Day" filename="Home-logo_day.png" />
                 <Asset src="/thingsinc/6705b9208ebb9e666ec8413b_Home-logo_night.png" alt="Logo Night" filename="Home-logo_night.png" />
                 <Asset src="/thingsinc/6724406f04b26f75915dd8c2_Home-logo_day.webp" alt="Logo Day WebP" filename="Home-logo_day.webp" />
+                <Asset src="/thingsinc/6705b9208ebb9e666ec8413b_Home-logo_night.webp" alt="Logo Night WebP" filename="Home-logo_night.webp" />
             </div>
             <h2 className="mt-10 text-xl font-semibold">Hex Rooms</h2>
             <div className="mt-4 grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4">

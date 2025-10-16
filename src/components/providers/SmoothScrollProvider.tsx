@@ -8,9 +8,8 @@ export default function SmoothScrollProvider({ children }: { children: React.Rea
     const reduce = usePrefersReducedMotion();
 
     React.useEffect(() => {
-        let cleanup: (() => void) | undefined;
-        let rafId: number | null = null;
-        let lenisInstance: any = null;
+    let cleanup: (() => void) | undefined;
+    let rafId: number | null = null;
         let updateScheduled = false;
 
         const setup = async () => {
@@ -30,7 +29,6 @@ export default function SmoothScrollProvider({ children }: { children: React.Rea
             // Import Lenis only on client
             const { default: Lenis } = await import("lenis");
             const lenis = new Lenis(getLenisBaseOptions());
-            lenisInstance = lenis;
 
             // Bridge Lenis with ScrollTrigger so scroll-driven animations stay in sync
             const onLenisScroll = () => {
@@ -38,7 +36,7 @@ export default function SmoothScrollProvider({ children }: { children: React.Rea
                 updateScheduled = true;
                 requestAnimationFrame(() => {
                     updateScheduled = false;
-                    try { (ScrollTrigger as any).update(); } catch { }
+                    try { ScrollTrigger.update(); } catch { }
                 });
             };
             lenis.on("scroll", onLenisScroll);
@@ -53,9 +51,9 @@ export default function SmoothScrollProvider({ children }: { children: React.Rea
                 if (rafId) cancelAnimationFrame(rafId);
                 try {
                     // Attempt to stop/cleanup if available
-                    (lenis as any).stop?.();
-                    (lenis as any).destroy?.();
-                    (ScrollTrigger as any).killAll?.(false);
+                    if (typeof (lenis as { stop?: () => void }).stop === 'function') (lenis as { stop?: () => void }).stop?.();
+                    if (typeof (lenis as { destroy?: () => void }).destroy === 'function') (lenis as { destroy?: () => void }).destroy?.();
+                    try { ScrollTrigger.killAll(false); } catch {}
                 } catch { }
             };
         };
@@ -65,7 +63,6 @@ export default function SmoothScrollProvider({ children }: { children: React.Rea
         return () => {
             cleanup?.();
             cleanup = undefined;
-            lenisInstance = null;
         };
         // include reduce so when user toggles OS setting, we re-evaluate
     }, [reduce]);

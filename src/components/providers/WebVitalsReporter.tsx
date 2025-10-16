@@ -5,12 +5,13 @@ declare global {
   interface Window {
     dataLayer?: Array<Record<string, unknown>>;
     gtag?: (command: string, eventName: string, params?: Record<string, unknown>) => void;
+    __consentGranted?: boolean;
   }
 }
 
 function sendMetric(name: string, value: number, detail: Record<string, unknown> = {}) {
   // Gate on explicit consent; undefined or false means do not send
-  if (typeof window !== "undefined" && (window as any).__consentGranted !== true) {
+  if (typeof window !== "undefined" && window.__consentGranted !== true) {
     return;
   }
   const params = { category: "web_vitals", name, value: Math.round(value), ...detail };
@@ -23,7 +24,7 @@ function sendMetric(name: string, value: number, detail: Record<string, unknown>
   } catch { }
   // Always log once for local verification
   if (process.env.NODE_ENV !== "production") {
-    console.info(`[Vitals] ${name}:`, params);
+    console.warn(`[Vitals] ${name}:`, params);
   }
 }
 

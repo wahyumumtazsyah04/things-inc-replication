@@ -5,6 +5,7 @@ declare global {
   interface Window {
     dataLayer?: Array<Record<string, unknown>>;
     gtag?: (command: string, eventName: string, params?: Record<string, unknown>) => void;
+    __consentGranted?: boolean;
   }
 }
 
@@ -23,7 +24,7 @@ export default function AnalyticsEvents() {
 
     const gtagSafe = (event: string, params: Record<string, unknown> = {}) => {
       // Optional consent gate: only emit when window.__consentGranted is true or undefined
-      const consentOk = (window as any).__consentGranted !== false;
+      const consentOk = window.__consentGranted !== false;
       if (!consentOk) return;
       try {
         if (typeof window.gtag === "function") {
@@ -31,7 +32,7 @@ export default function AnalyticsEvents() {
         } else if (Array.isArray(window.dataLayer)) {
           window.dataLayer.push({ event, ...params });
         }
-      } catch {}
+      } catch { }
     };
 
     const sendPageView = () => {

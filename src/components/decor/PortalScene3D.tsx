@@ -152,7 +152,11 @@ export default function PortalScene3D({ progress = 1 }: { progress?: number }) {
     const reduce = isReducedMotion();
     if (reduce) { setEnabled(false); return; }
     // Detect low power mode if exposed (Safari iOS and some browsers)
-    const lowPower = (navigator as any)?.battery?.saving || (navigator as any)?.deviceMemory === 0.25;
+    type NavigatorWithMemory = Navigator & { deviceMemory?: number };
+    type NavigatorWithConnection = Navigator & { connection?: { saveData?: boolean } };
+    const navMem = (navigator as NavigatorWithMemory).deviceMemory;
+    const saveData = (navigator as NavigatorWithConnection).connection?.saveData;
+    const lowPower = saveData === true || (typeof navMem === "number" && navMem <= 0.5);
     if (lowPower) { setEnabled(false); return; }
     // Detect WebGL support
     let glSupported = false;
@@ -243,9 +247,11 @@ function ProgressEffects({ progress }: { progress: number }) {
     camera.position.set(0, 0, z);
     if (root) {
       // Store base tilt; combine with any parallax offset if present
-      (root.userData as any).baseTilt = tilt;
-      const pitchOffset = (root.userData as any).pitchOffset ?? 0;
-      const yawOffset = (root.userData as any).yawOffset ?? 0;
+      type PortalUserData = { baseTilt?: number; pitchOffset?: number; yawOffset?: number };
+      const ud = (root.userData as PortalUserData);
+      ud.baseTilt = tilt;
+      const pitchOffset = ud.pitchOffset ?? 0;
+      const yawOffset = ud.yawOffset ?? 0;
       root.scale.setScalar(scale);
       root.rotation.x = tilt + pitchOffset;
       root.rotation.y = yawOffset;
@@ -306,9 +312,11 @@ function PointerParallax() {
     current.current.yaw += (target.current.yaw - current.current.yaw) * s;
     current.current.pitch += (target.current.pitch - current.current.pitch) * s;
     // Combine with base tilt from progress effects
-    const baseTilt = (root.userData as any).baseTilt ?? 0;
-    (root.userData as any).yawOffset = current.current.yaw;
-    (root.userData as any).pitchOffset = current.current.pitch;
+    type PortalUserData = { baseTilt?: number; pitchOffset?: number; yawOffset?: number };
+    const ud = (root.userData as PortalUserData);
+    const baseTilt = ud.baseTilt ?? 0;
+    ud.yawOffset = current.current.yaw;
+    ud.pitchOffset = current.current.pitch;
     root.rotation.y = current.current.yaw;
     root.rotation.x = baseTilt + current.current.pitch;
     // If near target, stop animating to save frames
