@@ -1,0 +1,388 @@
+{
+  "generatedAt": "2025-10-16T20:06:19.186Z",
+  "projectRoot": ".",
+  "routes": [
+    "/",
+    "/a-bunch-of-things",
+    "/about-us",
+    "/api/health",
+    "/api/newsletter",
+    "/api/og/log-book/[slug]",
+    "/api/og/static/[page]",
+    "/api/version",
+    "/assets",
+    "/contact",
+    "/log-book",
+    "/log-book/[slug]",
+    "/privacy",
+    "/rooms",
+    "/terms"
+  ],
+  "counts": {
+    "sourceFiles": 76,
+    "publicAssets": 37,
+    "unusedAssets": 1
+  },
+  "assets": [
+    {
+      "path": "public/thingsinc/66f3602a274968c5aa7bb8ff_footer_discord-night.svg",
+      "basename": "66f3602a274968c5aa7bb8ff_footer_discord-night.svg",
+      "size": 1314,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/components/layout/Footer.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/66f360582d624b679becc8a8_footer_instagram-day.svg",
+      "basename": "66f360582d624b679becc8a8_footer_instagram-day.svg",
+      "size": 3011,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/components/layout/Footer.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/66f360584e79b06365002187_footer_x-night.svg",
+      "basename": "66f360584e79b06365002187_footer_x-night.svg",
+      "size": 433,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/components/layout/Footer.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/66f3605861a90f310acdf217_footer_instagram-night.svg",
+      "basename": "66f3605861a90f310acdf217_footer_instagram-night.svg",
+      "size": 3013,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/components/layout/Footer.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/66f36058957f8216930752e7_footer_tiktok-night.svg",
+      "basename": "66f36058957f8216930752e7_footer_tiktok-night.svg",
+      "size": 2355,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/components/layout/Footer.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/66f36058b123ca59990b0d2c_footer_x-day.svg",
+      "basename": "66f36058b123ca59990b0d2c_footer_x-day.svg",
+      "size": 431,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/components/layout/Footer.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/66f36058d48d217d932d7ac5_footer_tiktok-day.svg",
+      "basename": "66f36058d48d217d932d7ac5_footer_tiktok-day.svg",
+      "size": 2350,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/components/layout/Footer.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/66f3605939c6b8addd616a6c_footer_threads-day.svg",
+      "basename": "66f3605939c6b8addd616a6c_footer_threads-day.svg",
+      "size": 1998,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/components/layout/Footer.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/66f360594367a3be3f06f61a_footer_youtube-night.svg",
+      "basename": "66f360594367a3be3f06f61a_footer_youtube-night.svg",
+      "size": 697,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/components/layout/Footer.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/66f36059c82b1e5845d15655_footer_discord-day.svg",
+      "basename": "66f36059c82b1e5845d15655_footer_discord-day.svg",
+      "size": 1312,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/components/layout/Footer.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/66f36059e1b812491915e08b_footer_youtube-day.svg",
+      "basename": "66f36059e1b812491915e08b_footer_youtube-day.svg",
+      "size": 695,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/components/layout/Footer.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/66f3609217acabd402d408dc_footer_threads-night.svg",
+      "basename": "66f3609217acabd402d408dc_footer_threads-night.svg",
+      "size": 2000,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/components/layout/Footer.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/66f367536d9cdf539095c9eb_footer-cloud-right_night.png",
+      "basename": "66f367536d9cdf539095c9eb_footer-cloud-right_night.png",
+      "size": 16750,
+      "usedByCount": 4,
+      "usedIn": [
+        "src/components/decor/AmbientClouds.tsx",
+        "src/components/decor/DecorWrapper.tsx",
+        "src/components/features/Hero.tsx",
+        "src/components/features/rooms/RoomsHero.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/66f367a804f8c9cd92a372ce_footer-cloud-right_day.png",
+      "basename": "66f367a804f8c9cd92a372ce_footer-cloud-right_day.png",
+      "size": 12086,
+      "usedByCount": 4,
+      "usedIn": [
+        "src/components/decor/AmbientClouds.tsx",
+        "src/components/decor/DecorWrapper.tsx",
+        "src/components/features/Hero.tsx",
+        "src/components/features/rooms/RoomsHero.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/66f367a805dd39bee16d5312_footer-clouds-bottom_day.png",
+      "basename": "66f367a805dd39bee16d5312_footer-clouds-bottom_day.png",
+      "size": 6546,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/components/layout/Footer.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/66f367a8274968c5aa82329f_footer-clouds-left_day.png",
+      "basename": "66f367a8274968c5aa82329f_footer-clouds-left_day.png",
+      "size": 8270,
+      "usedByCount": 4,
+      "usedIn": [
+        "src/components/decor/AmbientClouds.tsx",
+        "src/components/decor/DecorWrapper.tsx",
+        "src/components/features/Hero.tsx",
+        "src/components/features/rooms/RoomsHero.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/66f367a85cb2687ca4e30838_footer-clouds-left_night.png",
+      "basename": "66f367a85cb2687ca4e30838_footer-clouds-left_night.png",
+      "size": 18837,
+      "usedByCount": 4,
+      "usedIn": [
+        "src/components/decor/AmbientClouds.tsx",
+        "src/components/decor/DecorWrapper.tsx",
+        "src/components/features/Hero.tsx",
+        "src/components/features/rooms/RoomsHero.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/66f367a8a723298ff33cee0f_footer-clouds-bottom_night.png",
+      "basename": "66f367a8a723298ff33cee0f_footer-clouds-bottom_night.png",
+      "size": 15410,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/components/layout/Footer.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/66fdff627bcf2cef89fa0abd_menu-panel-brand.png",
+      "basename": "66fdff627bcf2cef89fa0abd_menu-panel-brand.png",
+      "size": 12431,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/components/layout/Header.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/670336a784858cd4b8e6b008_question mark purple 1.png",
+      "basename": "670336a784858cd4b8e6b008_question mark purple 1.png",
+      "size": 2675,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/components/features/rooms/RoomsHero.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/6705b9208ebb9e666ec8413b_Home-logo_night.png",
+      "basename": "6705b9208ebb9e666ec8413b_Home-logo_night.png",
+      "size": 157861,
+      "usedByCount": 3,
+      "usedIn": [
+        "src/app/assets/page.tsx",
+        "src/app/layout.tsx",
+        "src/app/manifest.ts"
+      ]
+    },
+    {
+      "path": "public/thingsinc/6705b9208ebb9e666ec8413b_Home-logo_night.webp",
+      "basename": "6705b9208ebb9e666ec8413b_Home-logo_night.webp",
+      "size": 45876,
+      "usedByCount": 4,
+      "usedIn": [
+        "src/app/assets/page.tsx",
+        "src/app/head.tsx",
+        "src/components/features/Hero.tsx",
+        "src/components/layout/Header.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/670f164b41e6cdbc1f70141b_switch.png",
+      "basename": "670f164b41e6cdbc1f70141b_switch.png",
+      "size": 72831,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/components/ui/ThemeToggle.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/6724406f04b26f75915dd8c2_Home-logo_day.png",
+      "basename": "6724406f04b26f75915dd8c2_Home-logo_day.png",
+      "size": 153735,
+      "usedByCount": 3,
+      "usedIn": [
+        "src/app/assets/page.tsx",
+        "src/app/layout.tsx",
+        "src/app/manifest.ts"
+      ]
+    },
+    {
+      "path": "public/thingsinc/6724406f04b26f75915dd8c2_Home-logo_day.webp",
+      "basename": "6724406f04b26f75915dd8c2_Home-logo_day.webp",
+      "size": 40760,
+      "usedByCount": 4,
+      "usedIn": [
+        "src/app/assets/page.tsx",
+        "src/app/head.tsx",
+        "src/components/features/Hero.tsx",
+        "src/components/layout/Header.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/67297fcb29a9d8b9fe2d90f7_hex_room_15.webp",
+      "basename": "67297fcb29a9d8b9fe2d90f7_hex_room_15.webp",
+      "size": 23406,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/components/features/LogBook.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/67297fcb3d8968f4ca826780_hex_room_1.webp",
+      "basename": "67297fcb3d8968f4ca826780_hex_room_1.webp",
+      "size": 26782,
+      "usedByCount": 4,
+      "usedIn": [
+        "src/app/assets/page.tsx",
+        "src/components/decor/DecorWrapper.tsx",
+        "src/components/features/ProductShowcase.tsx",
+        "src/components/features/rooms/RoomsHero.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/67297fcb79d42fdd90bf5e93_hex_room_2.webp",
+      "basename": "67297fcb79d42fdd90bf5e93_hex_room_2.webp",
+      "size": 28808,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/app/assets/page.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/67297fcb7f6587d3dc450334_hex_room_6.webp",
+      "basename": "67297fcb7f6587d3dc450334_hex_room_6.webp",
+      "size": 21984,
+      "usedByCount": 4,
+      "usedIn": [
+        "src/app/assets/page.tsx",
+        "src/components/decor/DecorWrapper.tsx",
+        "src/components/features/LogBook.tsx",
+        "src/components/features/rooms/RoomsHero.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/67297fcbbce0b1362a45c672_hex_room_5.webp",
+      "basename": "67297fcbbce0b1362a45c672_hex_room_5.webp",
+      "size": 20398,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/components/features/LogBook.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/67297fcbc32f2abc0494d557_hex_room_4.webp",
+      "basename": "67297fcbc32f2abc0494d557_hex_room_4.webp",
+      "size": 22312,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/app/assets/page.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/67297fcc8458fe142f15388a_hex_room_14.webp",
+      "basename": "67297fcc8458fe142f15388a_hex_room_14.webp",
+      "size": 24184,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/components/features/ProductShowcase.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/672bea61ffcc89b629e760fe_inner-logo_night.png",
+      "basename": "672bea61ffcc89b629e760fe_inner-logo_night.png",
+      "size": 5309,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/components/layout/Header.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/672beb4a0c7dad2a9e3a4eaa_inner-logo_day.png",
+      "basename": "672beb4a0c7dad2a9e3a4eaa_inner-logo_day.png",
+      "size": 5591,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/components/layout/Header.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/673a97406afd64c0cd3e355b_tunnel-with-mask.svg",
+      "basename": "673a97406afd64c0cd3e355b_tunnel-with-mask.svg",
+      "size": 8533,
+      "usedByCount": 2,
+      "usedIn": [
+        "src/app/globals.css",
+        "src/app/head.tsx"
+      ]
+    },
+    {
+      "path": "public/thingsinc/673e3f91a57cfea22147b7da_question mark blue.png",
+      "basename": "673e3f91a57cfea22147b7da_question mark blue.png",
+      "size": 1237,
+      "usedByCount": 1,
+      "usedIn": [
+        "src/components/features/rooms/RoomsHero.tsx"
+      ]
+    },
+    {
+      "path": "public/.well-known/security.txt",
+      "basename": "security.txt",
+      "size": 177,
+      "usedByCount": 0,
+      "usedIn": []
+    }
+  ]
+}

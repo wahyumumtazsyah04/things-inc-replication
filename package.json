@@ -11,7 +11,10 @@
     "check": "npm run lint && npm run typecheck",
     "copy:thingsinc": "node scripts/copy-thingsinc-assets.cjs",
     "audit:images": "node scripts/audit-images.mjs",
-    "convert:webp": "node scripts/convert-png-to-webp.mjs"
+    "convert:webp": "node scripts/convert-png-to-webp.mjs",
+    "index": "node scripts/index-workspace.mjs",
+    "align": "node scripts/align-with-thingsinc.mjs",
+    "scaffold:gaps": "node scripts/scaffold-missing-routes.mjs"
   },
   "dependencies": {
     "fuse.js": "latest",
