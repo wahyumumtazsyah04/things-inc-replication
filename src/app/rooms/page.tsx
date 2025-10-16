@@ -12,6 +12,7 @@ export const metadata = {
   twitter: { card: "summary_large_image", title: "Rooms", images: ["/api/og/static/rooms"] },
 };
 import RoomsHero from "@/components/features/rooms/RoomsHero";
+import Testimonials from "@/components/features/rooms/Testimonials";
 import Script from "next/script";
 
 export default function RoomsPage() {
@@ -28,6 +29,7 @@ export default function RoomsPage() {
         })}
       </Script>
       <RoomsHero />
+      <Testimonials />
     </>
   );
 }

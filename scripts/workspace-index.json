@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2025-10-16T20:06:19.186Z",
+  "generatedAt": "2025-10-16T20:12:34.254Z",
   "projectRoot": ".",
   "routes": [
     "/",
@@ -20,8 +20,8 @@
   ],
   "counts": {
     "sourceFiles": 76,
-    "publicAssets": 37,
-    "unusedAssets": 1
+    "publicAssets": 36,
+    "unusedAssets": 0
   },
   "assets": [
     {
@@ -376,13 +376,6 @@
       "usedIn": [
         "src/components/features/rooms/RoomsHero.tsx"
       ]
-    },
-    {
-      "path": "public/.well-known/security.txt",
-      "basename": "security.txt",
-      "size": 177,
-      "usedByCount": 0,
-      "usedIn": []
     }
   ]
 }

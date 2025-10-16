@@ -1,15 +1,5 @@
 {
-  "generatedAt": "2025-10-16T20:06:19.186Z",
-  "files": [
-    "public/.well-known/security.txt"
-  ],
-  "details": [
-    {
-      "path": "public/.well-known/security.txt",
-      "basename": "security.txt",
-      "size": 177,
-      "usedByCount": 0,
-      "usedIn": []
-    }
-  ]
+  "generatedAt": "2025-10-16T20:12:34.254Z",
+  "files": [],
+  "details": []
 }
