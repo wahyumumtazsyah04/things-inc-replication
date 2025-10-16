@@ -16,6 +16,7 @@ export type MDXPost = {
   summary?: string;
   image?: string;
   author?: string;
+  published?: boolean;
   content: string;
 };
 
@@ -31,7 +32,7 @@ export function getMDXBySlug(slug: string): MDXPost | null {
   if (!fs.existsSync(file)) return null;
   const raw = fs.readFileSync(file, "utf8");
     const { data, content } = matter(raw);
-    type FrontMatter = { title?: string; date?: string; summary?: string; image?: string; author?: string };
+    type FrontMatter = { title?: string; date?: string; summary?: string; image?: string; author?: string; published?: boolean };
     const fm = data as FrontMatter;
   // Derive a short summary if none is provided in frontmatter (first non-empty line up to 200 chars)
   const derivedSummary = (() => {
@@ -46,6 +47,7 @@ export function getMDXBySlug(slug: string): MDXPost | null {
       summary: derivedSummary,
       image: fm.image,
       author: fm.author,
+      published: fm.published !== false,
     content,
   };
 }
@@ -54,6 +56,7 @@ export function listMDXPosts(): Array<Pick<MDXPost, "slug" | "title" | "summary"
   return listMDXSlugs()
     .map((slug: string) => getMDXBySlug(slug))
     .filter((p: MDXPost | null): p is MDXPost => Boolean(p))
+    .filter((p: MDXPost) => p.published !== false)
     .sort((a: MDXPost, b: MDXPost) => {
       // Descending by date; if missing or equal, fall back to slug
       if (a.date && b.date) {

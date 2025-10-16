@@ -190,16 +190,18 @@ export default function PortalScene3D({ progress = 1 }: { progress?: number }) {
           </div>
         </>
       )}
-      <Canvas dpr={[1, 1.5]} frameloop="demand" camera={{ position: [0, 0, 3.2], fov: 55 }} onPointerMove={() => { /* kick demand loop */ }}>
+      <Canvas dpr={[1, 1.5]} frameloop="demand" camera={{ position: [0, 0, 3.2], fov: 55 }}>
         {/* Invalidate when props that affect visuals change (e.g., progress, theme handled inside overlays) */}
         {/** Helper to invalidate on prop changes */}
         {/** We'll piggy-back on VignetteOverlay useEffect for theme; for progress, add invalidator below */}
         {/** eslint-disable-next-line react/jsx-no-useless-fragment */}
         <InvalidateOnChange value={progress} />
+        <ProgressEffects progress={progress} />
+        <PointerParallax />
         <ambientLight intensity={theme === 'night' ? 0.45 : 0.6} />
         <directionalLight position={[3, 5, 2]} intensity={theme === 'night' ? 0.55 : 0.7} color={theme === 'night' ? new THREE.Color(0.7, 0.75, 1) : new THREE.Color(1, 0.95, 0.9)} />
         {/* Parallax layers with theme-aware palette */}
-        <group>
+        <group name="portal-root">
           <group position={[0, -0.08, -0.15]}>
             <DisplacedPlane amp={0.075 * intensity} colorA={palette.a} colorB={palette.b} alpha={palette.alpha * 0.58} />
           </group>
@@ -210,7 +212,7 @@ export default function PortalScene3D({ progress = 1 }: { progress?: number }) {
         </group>
         {/* Reveal overlay plane synced to progress (slightly above) */}
         <group position={[0, 0, 0.25]}>
-          <DisplacedPlane amp={0.075 * intensity} colorA={palette.a} colorB={palette.b} alpha={palette.alpha * 0.72} reveal={progress} />
+          <DisplacedPlane amp={(0.075 * intensity) * (0.9 + 0.4 * progress)} colorA={palette.a} colorB={palette.b} alpha={palette.alpha * 0.72} reveal={progress} />
         </group>
         {/* Subtle grain overlay */}
         <GrainOverlay />
@@ -225,5 +227,98 @@ export default function PortalScene3D({ progress = 1 }: { progress?: number }) {
 function InvalidateOnChange({ value }: { value: unknown }) {
   const { invalidate } = useThree();
   useEffect(() => { invalidate(); }, [value, invalidate]);
+  return null;
+}
+
+// Progress-driven camera and group transforms to enrich the scroll feel
+function ProgressEffects({ progress }: { progress: number }) {
+  const { camera, scene, invalidate } = useThree();
+  // Light dolly-in as progress increases
+  const z = 3.2 - 0.35 * progress;
+  const root = scene.getObjectByName("portal-root") as THREE.Group | null;
+  // Slight scale-up and tilt for depth
+  const scale = 1 + 0.06 * progress;
+  const tilt = (progress - 0.5) * 0.04; // subtle tilt around X
+  useEffect(() => {
+    camera.position.set(0, 0, z);
+    if (root) {
+      // Store base tilt; combine with any parallax offset if present
+      (root.userData as any).baseTilt = tilt;
+      const pitchOffset = (root.userData as any).pitchOffset ?? 0;
+      const yawOffset = (root.userData as any).yawOffset ?? 0;
+      root.scale.setScalar(scale);
+      root.rotation.x = tilt + pitchOffset;
+      root.rotation.y = yawOffset;
+    }
+    invalidate();
+  }, [z, scale, tilt, camera, root, invalidate]);
+  return null;
+}
+
+// Pointer-driven subtle parallax (yaw/pitch) with clamps and smoothing
+function PointerParallax() {
+  const { scene, invalidate } = useThree();
+  const rootRef = useRef<THREE.Group | null>(null);
+  const activeRef = useRef(false);
+  const current = useRef({ yaw: 0, pitch: 0 });
+  const target = useRef({ yaw: 0, pitch: 0 });
+
+  // Resolve root group once
+  useEffect(() => {
+    const root = scene.getObjectByName("portal-root") as THREE.Group | null;
+    rootRef.current = root;
+  }, [scene]);
+
+  useEffect(() => {
+    // Respect reduced motion and non-precise pointers
+    const reduce = isReducedMotion();
+    const pointerFine = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(pointer: fine)').matches;
+    if (reduce || !pointerFine) return;
+
+    const maxYaw = 0.08; // rad ~ 4.5deg
+    const maxPitch = 0.05; // rad ~ 2.8deg
+    const onMove = (e: PointerEvent) => {
+      const x = (e.clientX / window.innerWidth) * 2 - 1; // -1..1
+      const y = (e.clientY / window.innerHeight) * 2 - 1; // -1..1
+      target.current.yaw = THREE.MathUtils.clamp(x * maxYaw, -maxYaw, maxYaw);
+      target.current.pitch = THREE.MathUtils.clamp(-y * maxPitch, -maxPitch, maxPitch);
+      activeRef.current = true;
+      invalidate();
+    };
+    const reset = () => {
+      target.current.yaw = 0; target.current.pitch = 0; activeRef.current = true; invalidate();
+    };
+    window.addEventListener('pointermove', onMove, { passive: true });
+    window.addEventListener('blur', reset);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) reset(); });
+    return () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('blur', reset);
+    };
+  }, [invalidate]);
+
+  // Smooth towards target when active; keep demand loop alive until settled
+  useFrame(() => {
+    if (!activeRef.current) return;
+    const root = rootRef.current;
+    if (!root) return;
+    const s = 0.12; // smoothing factor per frame
+    current.current.yaw += (target.current.yaw - current.current.yaw) * s;
+    current.current.pitch += (target.current.pitch - current.current.pitch) * s;
+    // Combine with base tilt from progress effects
+    const baseTilt = (root.userData as any).baseTilt ?? 0;
+    (root.userData as any).yawOffset = current.current.yaw;
+    (root.userData as any).pitchOffset = current.current.pitch;
+    root.rotation.y = current.current.yaw;
+    root.rotation.x = baseTilt + current.current.pitch;
+    // If near target, stop animating to save frames
+    const dy = Math.abs(target.current.yaw - current.current.yaw);
+    const dp = Math.abs(target.current.pitch - current.current.pitch);
+    if (dy < 0.0008 && dp < 0.0008) {
+      activeRef.current = false;
+    } else {
+      invalidate();
+    }
+  });
   return null;
 }

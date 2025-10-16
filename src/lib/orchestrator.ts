@@ -26,6 +26,11 @@ export type OrchestratorOptions = {
     enableSnap?: boolean; // snap to scene boundaries
     topOffsetPx?: number; // sticky header height offset
     extraSnapPoints?: number[]; // additional global progress snap points 0..1
+    snapConfig?: {
+        duration?: number; // seconds
+        delay?: number;    // seconds
+        ease?: string;     // gsap ease name
+    };
 };
 
 function clamp01(n: number) { return Math.max(0, Math.min(1, n)); }
@@ -42,7 +47,7 @@ export function useOrchestrator(scenes: SceneConfig[], opts: OrchestratorOptions
 
     // derive a stable key for extra snap points to satisfy exhaustive-deps without causing churn
     const extraSnapKey = useMemo(() => {
-        const arr = (opts.extraSnapPoints || []).slice().filter((p) => p >= 0 && p <= 1).sort((a,b)=>a-b);
+        const arr = (opts.extraSnapPoints || []).slice().filter((p) => p >= 0 && p <= 1).sort((a, b) => a - b);
         return JSON.stringify(arr);
     }, [opts.extraSnapPoints]);
 
@@ -53,7 +58,7 @@ export function useOrchestrator(scenes: SceneConfig[], opts: OrchestratorOptions
 
     useEffect(() => {
         // Reduced motion guard
-            const reduce = isReducedMotion();
+        const reduce = isReducedMotion();
         if (reduce) return;
 
         // Build timelines per scene
@@ -82,7 +87,7 @@ export function useOrchestrator(scenes: SceneConfig[], opts: OrchestratorOptions
         timelinesRef.current = timelines;
 
         // Build root scroll trigger to drive progress across 0..1
-    const extra = extraSnapPoints;
+        const extra = extraSnapPoints;
         const snapPoints = enableSnap ? Array.from(new Set([
             0,
             ...scenes.map((s) => s.start),
@@ -96,19 +101,24 @@ export function useOrchestrator(scenes: SceneConfig[], opts: OrchestratorOptions
             start: 0,
             end: () => document.documentElement.scrollHeight - document.documentElement.clientHeight,
             scrub: true,
-            snap: snapPoints ? (value) => {
-                // map pixel value to 0..1 global progress
-                const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                if (h <= 0) return value;
-                const gp = clamp01(value / h);
-                // find nearest snap point
-                let nearest = snapPoints[0];
-                let minDist = Math.abs(gp - nearest);
-                for (let i = 1; i < snapPoints.length; i++) {
-                    const d = Math.abs(gp - snapPoints[i]);
-                    if (d < minDist) { minDist = d; nearest = snapPoints[i]; }
-                }
-                return nearest * h; // return pixel position
+            snap: snapPoints ? {
+                snapTo: (value: number) => {
+                    // map pixel value to 0..1 global progress
+                    const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    if (h <= 0) return value;
+                    const gp = clamp01(value / h);
+                    // find nearest snap point
+                    let nearest = snapPoints[0];
+                    let minDist = Math.abs(gp - nearest);
+                    for (let i = 1; i < snapPoints.length; i++) {
+                        const d = Math.abs(gp - snapPoints[i]);
+                        if (d < minDist) { minDist = d; nearest = snapPoints[i]; }
+                    }
+                    return nearest * h; // return pixel position
+                },
+                duration: opts.snapConfig?.duration ?? 0.58,
+                delay: opts.snapConfig?.delay ?? 0.02,
+                ease: opts.snapConfig?.ease ?? "power3.out",
             } : undefined,
             onUpdate: (self) => {
                 const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;

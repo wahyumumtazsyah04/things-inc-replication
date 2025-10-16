@@ -11,6 +11,7 @@ import ClientSideInjections from "@/components/providers/ClientSideInjections";
 import DiagnosticsToggle from "@/components/providers/DiagnosticsToggle";
 import { CollectiblesProvider } from "@/components/providers/CollectiblesProvider";
 import { AmbienceProvider } from "@/components/providers/AmbienceProvider";
+import RouteChangeEffects from "@/components/providers/RouteChangeEffects";
 import CollectiblesHUD from "@/components/ui/CollectiblesHUD";
 import ConsentBanner from "@/components/providers/ConsentBanner";
 
@@ -134,6 +135,8 @@ export default async function RootLayout({
                   {children}
                 </main>
               </PageTransitionProvider>
+              {/* Ensure ScrollTrigger and scroll-based scenes refresh correctly on navigation */}
+              <RouteChangeEffects />
               <Footer />
             </SmoothScrollProvider>
             {/* Optional HUD for development; enable via NEXT_PUBLIC_SHOW_HUD=true */}

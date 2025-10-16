@@ -38,17 +38,7 @@ export default function ProductShowcase() {
                     </SquircleCard>
                 </Link>
 
-                {/* Right bottom: Worlds */}
-                <Link className="reveal group link-reset" href="/worlds" aria-label="Worlds">
-                    <SquircleCard className="relative h-full p-3 collage-float">
-                        <Image src="/thingsinc/67297fcbec4cf962ce6be4a6_hex_room_19.webp" alt="Worlds preview" fill sizes="(max-width: 1024px) 45vw, 520px" className="card-bg object-cover" />
-                        <div className="corner-dot tr" />
-                        <div className="caption-bubble small" role="group" aria-label="Worlds">
-                            <h3 className="title">Worlds</h3>
-                            <p className="sub">Coming... eventually</p>
-                        </div>
-                    </SquircleCard>
-                </Link>
+                {/* Right bottom: intentionally left empty to align with live site (only two items) */}
             </div>
         </section>
     );

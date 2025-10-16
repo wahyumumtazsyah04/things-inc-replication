@@ -12,25 +12,11 @@ export const metadata = {
   twitter: { card: "summary_large_image", title: "Rooms", images: ["/api/og/static/rooms"] },
 };
 import RoomsHero from "@/components/features/rooms/RoomsHero";
-import RoomsGrid from "@/components/features/rooms/RoomsGrid";
 import Script from "next/script";
 
 export default function RoomsPage() {
   return (
     <>
-      <Script id="jsonld-rooms-itemlist" type="application/ld+json">
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "ItemList",
-          name: "Rooms",
-          itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Displays", url: "/rooms/displays" },
-            { "@type": "ListItem", position: 2, name: "Furniture", url: "/rooms/furniture" },
-            { "@type": "ListItem", position: 3, name: "Mirror", url: "/rooms/mirror" },
-            { "@type": "ListItem", position: 4, name: "Portal", url: "/rooms/portal" },
-          ],
-        })}
-      </Script>
       <Script id="jsonld-breadcrumbs-rooms" type="application/ld+json">
         {JSON.stringify({
           "@context": "https://schema.org",
@@ -42,7 +28,6 @@ export default function RoomsPage() {
         })}
       </Script>
       <RoomsHero />
-      <RoomsGrid />
     </>
   );
 }

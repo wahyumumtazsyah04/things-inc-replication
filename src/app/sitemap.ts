@@ -12,19 +12,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/about-us`, lastModified: now, changeFrequency: "yearly", priority: 0.7 },
     { url: `${base}/log-book`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     { url: `${base}/contact`, lastModified: now, changeFrequency: "yearly", priority: 0.5 },
-  { url: `${base}/privacy`, lastModified: now, changeFrequency: "yearly", priority: 0.4 },
-  { url: `${base}/terms`, lastModified: now, changeFrequency: "yearly", priority: 0.4 },
-  { url: `${base}/pricing`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
-  { url: `${base}/products`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
-  { url: `${base}/company/about`, lastModified: now, changeFrequency: "yearly", priority: 0.4 },
-    // Extra pages aligned to Things, Inc. analysis
+    { url: `${base}/privacy`, lastModified: now, changeFrequency: "yearly", priority: 0.4 },
+    { url: `${base}/terms`, lastModified: now, changeFrequency: "yearly", priority: 0.4 },
     { url: `${base}/assets`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
-    { url: `${base}/worlds`, lastModified: now, changeFrequency: "yearly", priority: 0.2 },
     { url: `${base}/rooms`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/rooms/displays`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/rooms/furniture`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/rooms/mirror`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/rooms/portal`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/a-bunch-of-things`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
   ];
   // Append MDX post detail pages, using frontmatter date when available
