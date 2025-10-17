@@ -54,11 +54,11 @@ export default function LogBookIndex() {
       />
       <h1 className="text-3xl font-bold">Log book</h1>
       <ul className="mt-6 space-y-4">
-        {posts.map((p: { slug: string; title: string; summary?: string; date?: string }) => (
+        {posts.map((p: { slug: string; title: string; summary?: string; date?: string; number?: number }) => (
           <li key={p.slug} className="border-b pb-4">
             <h2 className="text-xl font-semibold">
               <Link href={`/log-book/${p.slug}`} className="hover:underline">
-                {p.title}
+                {p.number ? `Log ${String(p.number).padStart(3, "0")}: ${p.title}` : p.title}
               </Link>
             </h2>
             {p.summary && <p className="mt-1 text-[color:var(--zenotika-muted)]">{p.summary}</p>}

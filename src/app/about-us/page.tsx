@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import DecorWrapper from "@/components/decor/DecorWrapper";
 import SectionHeader from "@/components/ui/SectionHeader";
-import Reveal from "@/components/ui/Reveal";
 
 export const metadata: Metadata = {
   title: "About us",
@@ -15,6 +14,17 @@ export const metadata: Metadata = {
 
 export default function AboutUsPage() {
   const year = new Date().getFullYear();
+  const placeholder = "/thingsinc/team/placeholder.svg";
+  const founders = [
+    { name: "Jason Toff", role: "CEO", image: placeholder, alt: "Portrait of Jason Toff" },
+    { name: "Nick Kruge", role: "Co-founder", image: placeholder, alt: "Portrait of Nick Kruge" },
+    { name: "Bruno Oliveira", role: "Co-founder", image: placeholder, alt: "Portrait of Bruno Oliveira" },
+  ] as const;
+  const team = [
+    { name: "Matt Fogarty", role: "Content Lead", image: placeholder, alt: "Portrait of Matt Fogarty" },
+    { name: "Camy Decembly", role: "Content & Community", image: placeholder, alt: "Portrait of Camy Decembly" },
+    { name: "Melissa Burd", role: "Content & Community", image: placeholder, alt: "Portrait of Melissa Burd" },
+  ] as const;
   return (
     <DecorWrapper showGrid>
       {/* Breadcrumbs */}
@@ -60,13 +70,18 @@ export default function AboutUsPage() {
       <section className="mx-auto mt-10 max-w-6xl px-4">
         <h2 className="text-xl font-semibold text-[color:var(--foreground)]">Team</h2>
         <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-3">
-          {[
-            { name: "Jason Toff", role: "CEO" },
-            { name: "Nick Kruge", role: "Co-founder" },
-            { name: "Bruno Oliveira", role: "Co-founder" },
-          ].map((p) => (
+          {founders.map((p) => (
             <div key={p.name} className="rounded-lg border p-4">
-              <div className="aspect-[4/3] w-full overflow-hidden rounded-md bg-[color:var(--zenotika-surface)]" />
+              <div className="aspect-[4/3] w-full overflow-hidden rounded-md bg-[color:var(--zenotika-surface)]">
+                <Image
+                  src={p.image}
+                  alt={p.alt}
+                  width={800}
+                  height={600}
+                  className="h-full w-full object-cover"
+                  sizes="(max-width: 640px) 100vw, 33vw"
+                />
+              </div>
               <div className="mt-3">
                 <div className="font-medium text-[color:var(--foreground)]">{p.name}</div>
                 <div className="text-sm text-[color:var(--zenotika-muted)]">{p.role}</div>
@@ -76,13 +91,19 @@ export default function AboutUsPage() {
         </div>
 
         <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-3">
-          {[
-            { name: "Matt Fogarty", role: "Content Lead" },
-            { name: "Camy Decembly", role: "Content & Community" },
-            { name: "Melissa Burd", role: "Content & Community" },
-          ].map((p) => (
+          {team.map((p) => (
             <div key={p.name} className="rounded-lg border p-4">
-              <div className="aspect-[4/3] w-full overflow-hidden rounded-md bg-[color:var(--zenotika-surface)]" />
+              <div className="aspect-[4/3] w-full overflow-hidden rounded-md bg-[color:var(--zenotika-surface)]">
+                <Image
+                  src={p.image}
+                  alt={p.alt}
+                  width={800}
+                  height={600}
+                  className="h-full w-full object-cover"
+                  sizes="(max-width: 640px) 100vw, 33vw"
+                  loading="lazy"
+                />
+              </div>
               <div className="mt-3">
                 <div className="font-medium text-[color:var(--foreground)]">{p.name}</div>
                 <div className="text-sm text-[color:var(--zenotika-muted)]">{p.role}</div>

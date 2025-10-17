@@ -14,7 +14,8 @@
     "convert:webp": "node scripts/convert-png-to-webp.mjs",
     "index": "node scripts/index-workspace.mjs",
     "align": "node scripts/align-with-thingsinc.mjs",
-    "scaffold:gaps": "node scripts/scaffold-missing-routes.mjs"
+    "scaffold:gaps": "node scripts/scaffold-missing-routes.mjs",
+    "smoke:routes": "node scripts/smoke-routes.mjs"
   },
   "dependencies": {
     "fuse.js": "latest",

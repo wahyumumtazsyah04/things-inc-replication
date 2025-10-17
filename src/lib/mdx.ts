@@ -16,6 +16,7 @@ export type MDXPost = {
   summary?: string;
   image?: string;
   author?: string;
+  number?: number;
   published?: boolean;
   content: string;
 };
@@ -32,7 +33,7 @@ export function getMDXBySlug(slug: string): MDXPost | null {
   if (!fs.existsSync(file)) return null;
   const raw = fs.readFileSync(file, "utf8");
     const { data, content } = matter(raw);
-    type FrontMatter = { title?: string; date?: string; summary?: string; image?: string; author?: string; published?: boolean };
+  type FrontMatter = { title?: string; date?: string; summary?: string; image?: string; author?: string; number?: number; published?: boolean };
     const fm = data as FrontMatter;
   // Derive a short summary if none is provided in frontmatter (first non-empty line up to 200 chars)
   const derivedSummary = (() => {
@@ -47,12 +48,13 @@ export function getMDXBySlug(slug: string): MDXPost | null {
       summary: derivedSummary,
       image: fm.image,
       author: fm.author,
+      number: typeof fm.number === "number" ? fm.number : undefined,
       published: fm.published !== false,
     content,
   };
 }
 
-export function listMDXPosts(): Array<Pick<MDXPost, "slug" | "title" | "summary" | "date">> {
+export function listMDXPosts(): Array<Pick<MDXPost, "slug" | "title" | "summary" | "date" | "number">> {
   return listMDXSlugs()
     .map((slug: string) => getMDXBySlug(slug))
     .filter((p: MDXPost | null): p is MDXPost => Boolean(p))
@@ -67,7 +69,7 @@ export function listMDXPosts(): Array<Pick<MDXPost, "slug" | "title" | "summary"
       if (!a.date && b.date) return 1;
       return a.slug.localeCompare(b.slug);
     })
-    .map(({ slug, title, summary, date }: MDXPost) => ({ slug, title, summary, date }));
+  .map(({ slug, title, summary, date, number }: MDXPost) => ({ slug, title, summary, date, number }));
 }
 
 export function getMdxOptions() {
